@@ -39,32 +39,92 @@ function satirBul(icerik, indeks) {
   return n;
 }
 
+function baglantiAdlari(kalip) {
+  const adlar = [];
+  const suslu = kalip.match(/\{([^}]*)\}/);
+  if (suslu) {
+    for (const parca of suslu[1].split(',')) {
+      const ad = parca.trim().split(/\s+as\s+/).pop().trim();
+      if (/^[A-Za-z_$][\w$]*$/.test(ad)) adlar.push(ad);
+    }
+  }
+  const varsayilan = kalip.replace(/\{[^}]*\}/, '').split(',')[0].trim();
+  if (/^[A-Za-z_$][\w$]*$/.test(varsayilan)) adlar.push(varsayilan);
+  const yildiz = kalip.match(/\*\s+as\s+([A-Za-z_$][\w$]*)/);
+  if (yildiz) adlar.push(yildiz[1]);
+  return adlar;
+}
+
+const ANAHTAR_KELIMELER = new Set([
+  'if', 'for', 'while', 'switch', 'catch', 'return', 'function', 'class', 'const', 'let', 'var',
+  'new', 'typeof', 'await', 'async', 'import', 'export', 'from', 'default', 'this', 'super',
+  'try', 'else', 'case', 'break', 'continue', 'delete', 'in', 'of', 'do', 'yield', 'def',
+  'print', 'self', 'not', 'and', 'or', 'is', 'None', 'True', 'False', 'lambda', 'with', 'as'
+]);
+
+function kullanimlariTopla(icerik) {
+  const kullanimlar = [];
+  const satirlar = icerik.split('\n');
+  for (let i = 0; i < satirlar.length; i++) {
+    const satir = satirlar[i];
+    if (/^\s*(import|from|export\s+\*|export\s+\{)/.test(satir)) continue;
+    if (/^\s*(\/\/|#|\*)/.test(satir)) continue;
+    const kalip = /\b([A-Za-z_$][\w$]*)\b/g;
+    let m;
+    while ((m = kalip.exec(satir))) {
+      if (ANAHTAR_KELIMELER.has(m[1])) continue;
+      const onceki = satir[m.index - 1];
+      if (onceki === '.') continue;
+      const sonrasi = satir.slice(m.index + m[1].length);
+      const cagri = /^\s*\(/.test(sonrasi) || onceki === '<';
+      kullanimlar.push({ ad: m[1], satir: i + 1, cagri });
+    }
+  }
+  return kullanimlar;
+}
+
 const cikarici = {
   js(icerik) {
     const baglar = [], simgeler = [];
-    const kaliplar = [
-      /\bimport\s+(?:[\w*{}\s,$]+\s+from\s+)?["']([^"']+)["']/g,
+    const bildirimKalip = /\bimport\s+(?!\()([^'";]*?)\s+from\s+["']([^"']+)["']|\bimport\s+["']([^"']+)["']/g;
+    let b;
+    while ((b = bildirimKalip.exec(icerik))) {
+      const spec = b[2] || b[3];
+      baglar.push({ hedef: spec, satir: satirBul(icerik, b.index), adlar: baglantiAdlari(b[1] || '') });
+    }
+    const digerKaliplar = [
       /\bexport\s+(?:\*|\{[^}]*\})\s+from\s+["']([^"']+)["']/g,
       /\brequire\(\s*["']([^"']+)["']\s*\)/g,
       /\bimport\(\s*["']([^"']+)["']\s*\)/g
     ];
-    for (const k of kaliplar) {
+    for (const k of digerKaliplar) {
       let m;
-      while ((m = k.exec(icerik))) baglar.push({ hedef: m[1], satir: satirBul(icerik, m.index) });
+      while ((m = k.exec(icerik))) baglar.push({ hedef: m[1], satir: satirBul(icerik, m.index), adlar: [] });
     }
-    const simgeKalip = /\bexport\s+(?:default\s+)?(?:async\s+)?(function|class|const|interface|type|enum)\s+([A-Za-z_$][\w$]*)/g;
+    const simgeKalip = /^[ \t]*(export\s+)?(?:default\s+)?(?:async\s+)?(function|class|interface|type|enum|const|let)\s+([A-Za-z_$][\w$]*)/gm;
     let s;
-    while ((s = simgeKalip.exec(icerik))) simgeler.push({ ad: s[2], tur: s[1], satir: satirBul(icerik, s.index) });
+    while ((s = simgeKalip.exec(icerik))) {
+      if ((s[2] === 'const' || s[2] === 'let') && !s[1] && !/=\s*(\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>|=\s*(async\s+)?function/.test(icerik.slice(s.index, s.index + 160))) continue;
+      simgeler.push({ ad: s[3], tur: s[2], satir: satirBul(icerik, s.index), disa: !!s[1] });
+    }
     return { baglar, simgeler };
   },
   python(icerik) {
     const baglar = [], simgeler = [];
-    const kalip = /^\s*(?:from\s+([.\w]+)\s+import|import\s+([.\w]+))/gm;
+    const kalip = /^\s*(?:from\s+([.\w]+)\s+import\s+([^\n#]+)|import\s+([.\w]+))/gm;
     let m;
-    while ((m = kalip.exec(icerik))) baglar.push({ hedef: m[1] || m[2], satir: satirBul(icerik, m.index) });
-    const sk = /^\s*(?:async\s+)?(def|class)\s+([A-Za-z_]\w*)/gm;
+    while ((m = kalip.exec(icerik))) {
+      baglar.push({
+        hedef: m[1] || m[3],
+        satir: satirBul(icerik, m.index),
+        adlar: m[2] ? m[2].split(',').map(x => x.trim().split(/\s+as\s+/).pop().trim()).filter(x => /^[A-Za-z_]\w*$/.test(x)) : []
+      });
+    }
+    const sk = /^([ \t]*)(?:async\s+)?(def|class)\s+([A-Za-z_]\w*)/gm;
     let s;
-    while ((s = sk.exec(icerik))) simgeler.push({ ad: s[2], tur: s[1], satir: satirBul(icerik, s.index) });
+    while ((s = sk.exec(icerik))) {
+      simgeler.push({ ad: s[3], tur: s[2], satir: satirBul(icerik, s.index), disa: s[1].length === 0 });
+    }
     return { baglar, simgeler };
   },
   rust(icerik) {
@@ -268,8 +328,9 @@ export function tara(kokYolu, secenekler = {}) {
       yol: kimlik,
       dil,
       satirSayisi: icerik.split('\n').length,
-      simgeler: simgeler.slice(0, 40),
-      dis: false
+      simgeler: secenekler.simge ? simgeler : simgeler.slice(0, 40),
+      dis: false,
+      ...(secenekler.simge ? { ithal: Object.create(null), kullanimlar: kullanimlariTopla(icerik) } : {})
     });
     dosyaKimlikleri.add(kimlik);
     const klasor = kimlik.split('/').slice(0, -1).join('/') || '.';
@@ -308,6 +369,10 @@ export function tara(kokYolu, secenekler = {}) {
         for (const h of hedefler) {
           if (h === kimlik) continue;
           hamKenarlar.push({ kaynak: kimlik, hedef: h, tur: 'ice-aktarim', satir: bag.satir });
+        }
+        if (secenekler.simge) {
+          const ithal = dugumler.get(kimlik).ithal;
+          for (const ad of bag.adlar || []) ithal[ad] = hedefler[0];
         }
       } else if (!bag.hedef.startsWith('.')) {
         const paket = paketAdi(bag.hedef);

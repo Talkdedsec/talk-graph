@@ -22,6 +22,20 @@ Diagram tools ask you to write the diagram. This one reads it. Every node is a r
 package, every edge a real import resolved to a real target, and every node links back to the
 line of code it came from.
 
+![Symbol view: functions and the calls between them](docs/gorsel/harita-simge.png)
+
+## Three levels
+
+| level | node | edge |
+|---|---|---|
+| `--gorunum grup` | package / folder | imports between them |
+| `--gorunum dosya` | file | resolved import |
+| `--gorunum simge` | function, class, type | call or use, with the line that makes it |
+
+Symbol level resolves named imports to the symbol they name, so a node is a function and an
+edge is a call. Group boxes become files. Clicking a symbol opens the file at its line.
+It covers TypeScript/JavaScript and Python; other languages fall back to file nodes.
+
 ## Install
 
 Node 20 or newer. Nothing else.
@@ -67,7 +81,8 @@ tg kume ./api               # modules the code actually has, versus the folders 
 
 | flag | effect |
 |---|---|
-| `--gorunum grup\|dosya` | package level (default) or file level |
+| `--gorunum grup\|dosya\|simge` | package level (default), file level, or symbol level |
+| `--hepsi` | in symbol view, draw unconnected symbols too |
 | `--derinlik <n>` | grouping path depth (default 2) |
 | `--gruplama klasor\|topluluk` | group by folder, or by what the code actually connects |
 | `--tema <ad>` | starting theme, see [Themes](docs/TEMALAR.md) |

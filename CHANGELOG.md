@@ -2,6 +2,29 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning: [SemVer](https://semver.org/lang/tr/).
 
+## [0.3.0] — 2026-09-09
+
+### Added · Eklenen
+
+- **Symbol level (`--gorunum simge`)** — nodes are functions, classes and types; edges are calls
+  and uses carrying the line that makes them. Named imports resolve to the symbol they name,
+  group boxes become files, and clicking a symbol opens the file at its line. Covers
+  TypeScript/JavaScript and Python; other languages keep file nodes.
+  *Simge seviyesi — dugumler fonksiyon/sinif/tip, kenarlar cagri; adlandirilmis import'lar
+  isaret ettikleri simgeye cozulur, grup kutulari dosyaya doner.*
+- **Column wrapping** — a layer with more than 26 nodes reflows into side-by-side columns
+  instead of one endless vertical stack. On this repository's own symbol map that turns a
+  6500-pixel column into a map that fits the screen.
+  *Sutun sarmasi — 26'dan fazla dugumlu katman yan yana sutunlara akitilir.*
+- **View state survives a refresh** — zoom, pan and the selected node are kept per map in
+  `sessionStorage`, so `tg izle` regenerating the file no longer loses your place.
+  *Gorunum durumu tazelemeden sagkalir; `tg izle` sonrasi yerini kaybetmezsin.*
+- `--hepsi` draws unconnected symbols too.
+- 7 more tests (37 total): import binding, call edges, symbol metadata, and a wrapping
+  invariant asserting no two nodes overlap after reflow.
+
+[0.3.0]: https://github.com/Talkdedsec/talk-graph/releases/tag/v0.3.0
+
 ## [0.2.0] — 2026-09-09
 
 ### Added · Eklenen

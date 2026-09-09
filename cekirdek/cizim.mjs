@@ -34,6 +34,7 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
         genislik: Math.round(d.genislik), yukseklik: Math.round(d.yukseklik),
         satirSayisi: d.satirSayisi || 0, uyeSayisi: d.uyeSayisi || 0,
         degisiklik: d.degisiklik || 0, sonDokunma: d.sonDokunma || 0,
+        dosya: d.dosya || '', satir: d.satir || 0, tur: d.tur || '',
         yazarSayisi: d.yazarSayisi || 0,
         simgeler: (d.simgeler || []).slice(0, 14)
       })),
@@ -94,7 +95,7 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
 </svg>
 
 <div class="panel" id="ust">
-  <div class="ad">${kacir(baslik)} <span>· ${kacir(veri.meta.gorunum === 'grup' ? 'paket görünümü' : 'dosya görünümü')}</span></div>
+  <div class="ad">${kacir(baslik)} <span>· ${kacir({ grup: 'paket görünümü', dosya: 'dosya görünümü', simge: 'simge görünümü' }[veri.meta.gorunum] || 'harita')}</span></div>
   <div class="olcum">${olcumSatiri}</div>
   <div class="bosluk"></div>
   <input id="ara" type="search" placeholder="ara  /  →  dosya, klasör, simge" autocomplete="off">

@@ -132,9 +132,32 @@ function isiDegistir() {
   bildir(acik ? 'renk: son 180 gunde degisiklik sayisi' : 'isi katmani kapandi');
 }
 
+const DURUM_ANAHTARI = 'tg-durum:' + veri.meta.ad + ':' + veri.meta.gorunum;
+
+function durumuYaz() {
+  clearTimeout(durumuYaz.zaman);
+  durumuYaz.zaman = setTimeout(() => {
+    try {
+      sessionStorage.setItem(DURUM_ANAHTARI, JSON.stringify({
+        gorunum, secili, dugumSayisi: dugumler.length
+      }));
+    } catch {}
+  }, 250);
+}
+
+function durumuOku() {
+  try {
+    const ham = sessionStorage.getItem(DURUM_ANAHTARI);
+    if (!ham) return null;
+    const d = JSON.parse(ham);
+    return d && d.gorunum && Number.isFinite(d.gorunum.olcek) ? d : null;
+  } catch { return null; }
+}
+
 function gorunumUygula() {
   sahne.setAttribute('transform', `translate(${gorunum.x} ${gorunum.y}) scale(${gorunum.olcek})`);
   kucukHaritaGuncelle();
+  durumuYaz();
 }
 
 function sigdir(hedefKutu) {
@@ -235,6 +258,7 @@ function kenarlariYenidenCiz(kimlik) {
 
 function sec(kimlik) {
   secili = kimlik;
+  durumuYaz();
   for (const [k, oge] of dugumOge) oge.classList.toggle('secili', k === kimlik);
   if (!kimlik) {
     document.getElementById('detay').style.display = 'none';
@@ -272,7 +296,7 @@ function detayGoster(d, bag) {
 
   p.innerHTML = `
     <h2>${d.ad || d.kimlik}</h2>
-    <div class="yol">${d.yol || ''}</div>
+    <div class="yol">${d.tur ? d.tur + ' · ' : ''}${d.yol || ''}</div>
     <div class="kutucuk">
       <div><b>${bag.gelen.length}</b><span>çağıran</span></div>
       <div><b>${bag.giden.length}</b><span>bağımlılık</span></div>
@@ -586,5 +610,13 @@ gruplariCiz();
 kenarlariCiz();
 dugumleriCiz();
 kucukHaritaCiz();
-sigdir();
+const kayitliDurum = durumuOku();
+if (kayitliDurum) {
+  gorunum = kayitliDurum.gorunum;
+  gorunumUygula();
+  if (kayitliDurum.secili && dugumHarita.has(kayitliDurum.secili)) sec(kayitliDurum.secili);
+  if (kayitliDurum.dugumSayisi !== dugumler.length) bildir('harita tazelendi, gorunum korundu');
+} else {
+  sigdir();
+}
 window.addEventListener('resize', () => kucukHaritaGuncelle());

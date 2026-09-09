@@ -7,6 +7,7 @@ import { zenginlestir, grupla, komsuluk, budale, fark } from '../cekirdek/graf.m
 import { yerlesimKur } from '../cekirdek/yerlesim.mjs';
 import { htmlUret } from '../cekirdek/cizim.mjs';
 import { gecmisiIsle } from '../cekirdek/gecmis.mjs';
+import { simgeGrafi } from '../cekirdek/simge.mjs';
 import { dugumBul, anlat, enKisaYol, denetle, topluluklar } from '../cekirdek/analiz.mjs';
 import { bicimler, uzantilar } from '../cekirdek/disaaktar.mjs';
 
@@ -25,7 +26,9 @@ const KULLANIM = `talk-graph — kod tabanindan canli mimari haritasi
 
 secenekler
   --cikti <dosya>       html/json cikti yolu (varsayilan cikti/<ad>.html)
-  --gorunum grup|dosya  paket seviyesi (varsayilan) veya dosya seviyesi
+  --gorunum grup|dosya|simge
+                        paket (varsayilan), dosya ya da simge (fonksiyon/sinif) seviyesi
+  --hepsi               simge gorunumunde bagsiz simgeleri de ciz
   --derinlik <n>        grup yolu derinligi (varsayilan 2)
   --gruplama klasor|topluluk  gruplari klasore gore mi baglantiya gore mi kur
   --odak <yol parcasi>  o dugumun komsulugunu ciz
@@ -43,7 +46,7 @@ secenekler
   --acma                uretince tarayicida acma
 `;
 
-const IMLER = ['dis', 'acma', 'testyok', 'gecmisyok', 'json', 'yonsuz'];
+const IMLER = ['dis', 'acma', 'testyok', 'gecmisyok', 'json', 'yonsuz', 'hepsi'];
 
 function secenekleriAyikla(argv) {
   const s = { _: [] };
@@ -65,11 +68,16 @@ function tarayiciyaGonder(yol) {
 
 function grafHazirla(kaynak, s) {
   const ayar = { grupSeviyesi: Number(s.derinlik) || 2 };
+  const simgeMi = s.gorunum === 'simge';
   const ham = (kaynak.endsWith('.json') && existsSync(kaynak))
     ? JSON.parse(readFileSync(kaynak, 'utf8'))
-    : tara(kaynak, { testYok: !!s.testyok });
-  const graf = zenginlestir(ham, ayar);
-  return s.gecmisyok ? graf : gecmisiIsle(graf, Number(s.gun) || 180);
+    : tara(kaynak, { testYok: !!s.testyok, simge: simgeMi });
+  let graf = zenginlestir(ham, ayar);
+  if (!s.gecmisyok) graf = gecmisiIsle(graf, Number(s.gun) || 180);
+  if (!simgeMi) return graf;
+  const simgeler = zenginlestir(simgeGrafi(graf, { hepsi: !!s.hepsi }), ayar);
+  for (const d of simgeler.dugumler) d.grup = d.dosya;
+  return simgeler;
 }
 
 function disPaketleriAt(graf) {

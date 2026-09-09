@@ -1,7 +1,7 @@
 # talk-graph — durum
 
 Başlangıç: 9 Eylül 2026. Sıfırdan yazıldı, dış bağımlılık yok, kod tamamen bize ait.
-Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.2.0. CI: ubuntu+windows × node 20/22/24, yeşil.
+Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.3.0. CI: ubuntu+windows × node 20/22/24, yeşil.
 Belgeler iki dilli: README.md (EN) + README.tr.md, docs/ARCHITECTURE.md + docs/MIMARI.md.
 
 ## Neden
@@ -27,17 +27,21 @@ bağımlılıksız ve Türkçe yazıldı; hiçbir kod ya da isim kopyalanmadı.
 - Çözümleme: rol + Martin kararsızlığı, en kısa import zinciri, sağlık raporu,
   Louvain modülerlik kümeleme (`--gruplama topluluk` ile çizime bağlı)
 - Dışa aktarma: dot, graphml, csv, mermaid, json
-- 30 test, CI 6 iş matrisinde yeşil
+- Simge seviyesi graf: fonksiyon/sınıf düğümleri, çağrı kenarları, dosya grup kutuları
+  (TS/JS + Python; import bağlama + kapsayan bildirim + çağrı biçimi süzgeci)
+- Sütun sarması: 26'dan kalabalık katman yan yana sütunlara akıtılır
+- Görünüm durumu sessionStorage'da; tazeleme yeri kaybetmiyor
+- 37 test, CI 6 iş matrisinde yeşil
 
 Ölçüm (9 Eyl): huntx 76 dosya 625 bağ → 37 düğüm 8 katman **61 kesişme**, 42 ms.
 rixor 193 dosya 1039 bağ → 10 düğüm 5 katman 24 kesişme, 392 ms.
 
 ## Sıradaki
 
-- Simge seviyesi graf (dosya değil fonksiyon/sınıf düğümleri)
-- Çağrı kenarları (şu an sadece import/using bağları var)
+- Simge seviyesini Go, Rust, C# için de aç (paket nitelikli çağrı çözümü)
+- `tg izle` ile tarayıcıyı kendiliğinden tazeleme (küçük yerel sunucu + sürüm damgası)
+
 - Kanvas düzenleme: kenar ekleme/silme, düğüm yeniden adlandırma, spec'e geri yazma
-- `tg izle` ile canlı tazeleme sırasında görünüm durumunu koruma
 
 ## Kırmızı çizgiler
 
