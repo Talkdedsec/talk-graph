@@ -1,7 +1,7 @@
 # talk-graph — durum
 
 Başlangıç: 9 Eylül 2026. Sıfırdan yazıldı, dış bağımlılık yok, kod tamamen bize ait.
-Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.3.0. CI: ubuntu+windows × node 20/22/24, yeşil.
+Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.4.0. CI: ubuntu+windows × node 20/22/24, yeşil.
 Belgeler iki dilli: README.md (EN) + README.tr.md, docs/ARCHITECTURE.md + docs/MIMARI.md.
 
 ## Neden
@@ -36,9 +36,23 @@ bağımlılıksız ve Türkçe yazıldı; hiçbir kod ya da isim kopyalanmadı.
 Ölçüm (9 Eyl): huntx 76 dosya 625 bağ → 37 düğüm 8 katman **61 kesişme**, 42 ms.
 rixor 193 dosya 1039 bağ → 10 düğüm 5 katman 24 kesişme, 392 ms.
 
+## Kıyas ölçümü (9 Eyl, huntx üzerinde)
+
+Aynı depoda graphify 628 düğüm / 1704 kenar (calls 635, references 551, contains 464, method 54)
+çıkarıyordu; talk-graph 350 düğüm / 277 kenar ile geride kalıyordu — Go'da nitelikli çağrılar
+çözülmüyordu. Düzeltmeden sonra **547 simge / 1261 kenar** (cagri 877, referans 205, metot 125,
+icerir 54). Kalan fark ağırlıkla graphify'ın dosya→simge `contains` kenarları (464) ve markdown
+düğümleri; ikisi de bizde grup kutusu ve ayrı kapsam olarak duruyor.
+
+Bizim önde olduğumuz yer yerleşim: graphify'ın çıktısı force-directed kıl yumağı, yön okunmuyor.
+Bizimki katmanlı + ortogonal + ölçülmüş kesişme. Kıl yumağıyla yarışılmaz, oraya gidilmez.
+
 ## Sıradaki
 
-- Simge seviyesini Go, Rust, C# için de aç (paket nitelikli çağrı çözümü)
+- `contains` kenarı: dosya→simge hiyerarşisi (grup kutusuna alternatif, opsiyonel)
+- Markdown/doküman düğümleri (`--belge`): başlık düğümleri + kod referansları
+- Artımlı tarama: sadece değişen dosyayı yeniden çıkar (`tg izle` şu an tümünü tarıyor)
+
 - `tg izle` ile tarayıcıyı kendiliğinden tazeleme (küçük yerel sunucu + sürüm damgası)
 
 - Kanvas düzenleme: kenar ekleme/silme, düğüm yeniden adlandırma, spec'e geri yazma

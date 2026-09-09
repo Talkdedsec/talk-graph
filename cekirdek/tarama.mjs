@@ -69,10 +69,20 @@ function kullanimlariTopla(icerik) {
     const satir = satirlar[i];
     if (/^\s*(import|from|export\s+\*|export\s+\{)/.test(satir)) continue;
     if (/^\s*(\/\/|#|\*)/.test(satir)) continue;
+    const nitelikYerleri = new Set();
+    const nitelikli = /\b([A-Za-z_$][\w$]*)\s*\.\s*([A-Za-z_$][\w$]*)\s*(\()?/g;
+    let n;
+    while ((n = nitelikli.exec(satir))) {
+      if (ANAHTAR_KELIMELER.has(n[1])) continue;
+      if (satir[n.index - 1] === '.') continue;
+      nitelikYerleri.add(n.index);
+      kullanimlar.push({ nitelik: n[1], ad: n[2], satir: i + 1, cagri: !!n[3] });
+    }
     const kalip = /\b([A-Za-z_$][\w$]*)\b/g;
     let m;
     while ((m = kalip.exec(satir))) {
       if (ANAHTAR_KELIMELER.has(m[1])) continue;
+      if (nitelikYerleri.has(m.index)) continue;
       const onceki = satir[m.index - 1];
       if (onceki === '.') continue;
       const sonrasi = satir.slice(m.index + m[1].length);
@@ -131,38 +141,61 @@ const cikarici = {
     const baglar = [], simgeler = [];
     const kalip = /^\s*(?:pub\s+)?(?:use\s+([\w:]+)|mod\s+(\w+)\s*;)/gm;
     let m;
-    while ((m = kalip.exec(icerik))) baglar.push({ hedef: m[1] || m[2], satir: satirBul(icerik, m.index) });
-    const sk = /^\s*(?:pub(?:\([\w:]+\))?\s+)?(fn|struct|enum|trait|impl)\s+(\w+)/gm;
+    while ((m = kalip.exec(icerik))) {
+      const spec = m[1] || m[2];
+      baglar.push({ hedef: spec, satir: satirBul(icerik, m.index), adlar: [spec.split('::').pop()] });
+    }
+    const sk = /^(\s*)(?:pub(?:\([\w:]+\))?\s+)?(?:async\s+)?(fn|struct|enum|trait|impl)\s+(\w+)/gm;
     let s;
-    while ((s = sk.exec(icerik))) simgeler.push({ ad: s[2], tur: s[1], satir: satirBul(icerik, s.index) });
+    while ((s = sk.exec(icerik))) {
+      simgeler.push({ ad: s[3], tur: s[2], satir: satirBul(icerik, s.index), disa: s[1].length === 0 });
+    }
     return { baglar, simgeler };
   },
   csharp(icerik) {
     const baglar = [], simgeler = [];
     const kalip = /^\s*using\s+(?:static\s+)?([\w.]+)\s*;/gm;
     let m;
-    while ((m = kalip.exec(icerik))) baglar.push({ hedef: m[1], satir: satirBul(icerik, m.index) });
+    while ((m = kalip.exec(icerik))) {
+      baglar.push({ hedef: m[1], satir: satirBul(icerik, m.index), adlar: [m[1].split('.').pop()] });
+    }
     const sk = /^\s*(?:public|internal|private|protected)?\s*(?:sealed\s+|static\s+|abstract\s+|partial\s+)*(class|interface|record|struct|enum)\s+(\w+)/gm;
     let s;
-    while ((s = sk.exec(icerik))) simgeler.push({ ad: s[2], tur: s[1], satir: satirBul(icerik, s.index) });
+    while ((s = sk.exec(icerik))) simgeler.push({ ad: s[2], tur: s[1], satir: satirBul(icerik, s.index), disa: true });
+    const uye = /^\s*(?:public|internal|protected)\s+(?:static\s+|async\s+|virtual\s+|override\s+|sealed\s+)*[\w<>\[\],? ]+?\s+(\w+)\s*\(/gm;
+    let u;
+    while ((u = uye.exec(icerik))) simgeler.push({ ad: u[1], tur: 'method', satir: satirBul(icerik, u.index), disa: true });
     return { baglar, simgeler };
   },
   go(icerik) {
     const baglar = [], simgeler = [];
+    const paketAdiCoz = (spec, takma) => takma || spec.split('/').pop();
     const blok = /import\s*\(([\s\S]*?)\)/g;
     let b;
     while ((b = blok.exec(icerik))) {
       for (const satir of b[1].split('\n')) {
-        const m = satir.match(/"([^"]+)"/);
-        if (m) baglar.push({ hedef: m[1], satir: satirBul(icerik, b.index) });
+        const m = satir.match(/^\s*(?:(\w+)\s+)?"([^"]+)"/);
+        if (m) baglar.push({ hedef: m[2], satir: satirBul(icerik, b.index), adlar: [paketAdiCoz(m[2], m[1])] });
       }
     }
-    const tek = /^\s*import\s+(?:\w+\s+)?"([^"]+)"/gm;
+    const tek = /^\s*import\s+(?:(\w+)\s+)?"([^"]+)"/gm;
     let t;
-    while ((t = tek.exec(icerik))) baglar.push({ hedef: t[1], satir: satirBul(icerik, t.index) });
-    const sk = /^\s*func\s+(?:\([^)]*\)\s*)?(\w+)|^\s*type\s+(\w+)/gm;
+    while ((t = tek.exec(icerik))) {
+      baglar.push({ hedef: t[2], satir: satirBul(icerik, t.index), adlar: [paketAdiCoz(t[2], t[1])] });
+    }
+    const fonksiyon = /^func\s+(?:\(\s*\w+\s+\*?(\w+)\s*\)\s*)?(\w+)/gm;
     let s;
-    while ((s = sk.exec(icerik))) simgeler.push({ ad: s[1] || s[2], tur: s[1] ? 'func' : 'type', satir: satirBul(icerik, s.index) });
+    while ((s = fonksiyon.exec(icerik))) {
+      simgeler.push({
+        ad: s[2], tur: s[1] ? 'method' : 'func', satir: satirBul(icerik, s.index),
+        disa: /^[A-Z]/.test(s[2]), sahip: s[1] || null
+      });
+    }
+    const tip = /^type\s+(\w+)\s+(struct|interface|func|\w+)/gm;
+    let tp;
+    while ((tp = tip.exec(icerik))) {
+      simgeler.push({ ad: tp[1], tur: tp[2] === 'struct' || tp[2] === 'interface' ? tp[2] : 'type', satir: satirBul(icerik, tp.index), disa: /^[A-Z]/.test(tp[1]) });
+    }
     return { baglar, simgeler };
   },
   lua(icerik) {
@@ -372,7 +405,7 @@ export function tara(kokYolu, secenekler = {}) {
         }
         if (secenekler.simge) {
           const ithal = dugumler.get(kimlik).ithal;
-          for (const ad of bag.adlar || []) ithal[ad] = hedefler[0];
+          for (const ad of bag.adlar || []) ithal[ad] = hedefler;
         }
       } else if (!bag.hedef.startsWith('.')) {
         const paket = paketAdi(bag.hedef);

@@ -2,6 +2,30 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning: [SemVer](https://semver.org/lang/tr/).
 
+## [0.4.0] — 2026-09-09
+
+### Changed · Degisen
+
+- **Symbol level now covers Go, Rust, C# and Java.** Qualified calls (`scope.Load()`,
+  `pkg::fn()`, `Ns.Method()`) resolve through the import's bound name to the symbol in the
+  target package, Go methods carry their receiver type, C# members are extracted, and a call
+  that resolves inside the caller's own package is kept as a `metot` edge.
+  *Simge seviyesi Go, Rust, C# ve Java'yi da kapsiyor; nitelikli cagrilar hedef paketteki
+  simgeye cozuluyor.*
+  Measured on a 76-file Go repository: **350 → 547 symbols, 277 → 1261 edges**, and the top
+  nodes become `finding.Finding`, `cli.Execute`, `fetch.Client`, `scope.Scope`.
+- **Two more relation types** — `referans` (named without being called) and `icerir` (a type
+  contains a method), drawn distinctly.
+  *Iki yeni iliski turu: referans ve icerir.*
+
+### Fixed · Duzeltilen
+
+- A package name mentioned in a qualified expression no longer produced a spurious edge to the
+  package's module node; the qualifier is now consumed by the qualified match.
+  *Nitelikli ifadedeki paket adi artik sahte modul kenari uretmiyor.*
+
+[0.4.0]: https://github.com/Talkdedsec/talk-graph/releases/tag/v0.4.0
+
 ## [0.3.0] — 2026-09-09
 
 ### Added · Eklenen
