@@ -89,7 +89,7 @@ function kenarlariCiz() {
     if (uc) {
       ogeKur('path', {
         class: 'kenar-ok' + (k.dongude ? ' dongude' : ''),
-        d: 'M 0 0 L -8 -3.4 L -8 3.4 Z',
+        d: 'M 0 0 L -9.5 -4 L -9.5 4 Z',
         transform: `translate(${uc.x} ${uc.y}) rotate(${uc.aci})`
       }, g);
     }
@@ -104,9 +104,12 @@ function dugumleriCiz() {
       transform: `translate(${d.x} ${d.y})`,
       'data-kimlik': d.kimlik
     }, katmanDugum);
-    ogeKur('rect', {
+    const govde = ogeKur('rect', {
       class: 'govde', x: 0, y: 0, width: d.genislik, height: d.yukseklik, rx: 9
     }, g);
+    const derecePayi = Math.min(1, ((komsular.get(d.kimlik)?.gelen.length || 0) +
+      (komsular.get(d.kimlik)?.giden.length || 0)) / Math.max(6, onemEsigi * 2));
+    if (derecePayi > 0.15) govde.setAttribute('stroke-width', (1 + derecePayi * 2.2).toFixed(2));
     ogeKur('rect', {
       class: 'serit', x: 0, y: 0, width: 3.5, height: d.yukseklik, rx: 2,
       fill: d.grup ? grupRengi(d.grup) : (DIL_RENGI[d.dil] || 'var(--cizgi-guclu)')
