@@ -228,11 +228,18 @@ export function kimlikUret(kok, dosya) {
   return relative(kok, dosya).split(sep).join('/');
 }
 
+const TEST_DESENI = /(^|\/)(tests?|__tests__|spec|specs)\/|(\.|_)(test|spec)\.[^/]+$|Tests?\.cs$/i;
+
+export function testDosyasiMi(goreliYol) {
+  return TEST_DESENI.test(goreliYol);
+}
+
 export function tara(kokYolu, secenekler = {}) {
   const kok = resolve(kokYolu);
   const enFazla = secenekler.enFazlaDosya ?? 4000;
   const dosyalar = [];
   for (const d of dosyalariGez(kok)) {
+    if (secenekler.testYok && testDosyasiMi(kimlikUret(kok, d))) continue;
     dosyalar.push(d);
     if (dosyalar.length >= enFazla) break;
   }

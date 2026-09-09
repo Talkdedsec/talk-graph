@@ -6,6 +6,7 @@ import { tara } from '../cekirdek/tarama.mjs';
 import { zenginlestir, grupla, komsuluk, budale, fark } from '../cekirdek/graf.mjs';
 import { yerlesimKur } from '../cekirdek/yerlesim.mjs';
 import { htmlUret } from '../cekirdek/cizim.mjs';
+import { gecmisiIsle } from '../cekirdek/gecmis.mjs';
 
 const KULLANIM = `talk-graph — kod tabanindan canli mimari haritasi
 
@@ -24,6 +25,9 @@ secenekler
   --enfazla <n>         cizilecek en fazla dugum (varsayilan 120)
   --yon sag|asagi       akis yonu (varsayilan sag)
   --dis                 dis paketleri de ciz (varsayilan disarida)
+  --testyok             test dosyalarini disla
+  --gun <n>             git gecmisi penceresi, gun (varsayilan 180)
+  --gecmisyok           git gecmisi katmanini okuma
   --konum <dosya>       kaydedilmis dugum konumlarini uygula
   --acma                uretince tarayicida acma
 `;
@@ -34,7 +38,7 @@ function secenekleriAyikla(argv) {
     const a = argv[i];
     if (!a.startsWith('--')) { s._.push(a); continue; }
     const ad = a.slice(2);
-    if (['dis', 'acma'].includes(ad)) { s[ad] = true; continue; }
+    if (['dis', 'acma', 'testyok', 'gecmisyok'].includes(ad)) { s[ad] = true; continue; }
     s[ad] = argv[++i];
   }
   return s;
@@ -47,10 +51,12 @@ function tarayiciyaGonder(yol) {
 }
 
 function grafHazirla(kaynak, s) {
-  if (kaynak.endsWith('.json') && existsSync(kaynak)) {
-    return zenginlestir(JSON.parse(readFileSync(kaynak, 'utf8')), { grupSeviyesi: Number(s.derinlik) || 2 });
-  }
-  return zenginlestir(tara(kaynak), { grupSeviyesi: Number(s.derinlik) || 2 });
+  const ayar = { grupSeviyesi: Number(s.derinlik) || 2 };
+  const ham = (kaynak.endsWith('.json') && existsSync(kaynak))
+    ? JSON.parse(readFileSync(kaynak, 'utf8'))
+    : tara(kaynak, { testYok: !!s.testyok });
+  const graf = zenginlestir(ham, ayar);
+  return s.gecmisyok ? graf : gecmisiIsle(graf, Number(s.gun) || 180);
 }
 
 function gorunumHazirla(graf, s) {

@@ -93,6 +93,12 @@ function dugumleriCiz() {
       class: 'serit', x: 0, y: 0, width: 3.5, height: d.yukseklik, rx: 2,
       fill: DIL_RENGI[d.dil] || 'var(--cizgi-guclu)'
     }, g);
+    if (d.degisiklik) {
+      ogeKur('rect', {
+        class: 'isi', x: 0, y: 0, width: d.genislik, height: d.yukseklik, rx: 9,
+        fill: isiRengi(d.degisiklik), opacity: 0
+      }, g);
+    }
     const baslik = ogeKur('text', { class: 'baslik', x: 14, y: d.uyeSayisi || d.yol !== d.ad ? 20 : 27 }, g);
     baslik.textContent = kisalt(d.ad || d.kimlik, Math.floor((d.genislik - 30) / 7.1));
     const altMetin = d.uyeSayisi ? d.uyeSayisi + ' dosya' : (d.yol !== d.ad ? d.yol : '');
@@ -109,6 +115,21 @@ function dugumleriCiz() {
     g.addEventListener('click', e => { e.stopPropagation(); if (!surukleniyorDugum) sec(d.kimlik); });
     dugumOge.set(d.kimlik, g);
   }
+}
+
+function isiRengi(degisiklik) {
+  const enFazla = veri.meta.gecmisEnFazla || 1;
+  const oran = Math.min(1, Math.log2(degisiklik + 1) / Math.log2(enFazla + 1));
+  const ton = 210 - oran * 210;
+  return `hsl(${ton} 78% 56%)`;
+}
+
+function isiDegistir() {
+  const dugme = document.getElementById('isi-dugme');
+  if (!veri.meta.gecmisEnFazla) { bildir('git gecmisi okunamadi'); return; }
+  const acik = dugme.classList.toggle('acik');
+  document.body.classList.toggle('isi-acik', acik);
+  bildir(acik ? 'renk: son 180 gunde degisiklik sayisi' : 'isi katmani kapandi');
 }
 
 function gorunumUygula() {
@@ -257,6 +278,7 @@ function detayGoster(d, bag) {
       <div><b>${bag.giden.length}</b><span>bağımlılık</span></div>
       <div><b>${d.satirSayisi || d.uyeSayisi || 0}</b><span>${d.uyeSayisi ? 'dosya' : 'satır'}</span></div>
     </div>
+    ${d.degisiklik ? `<div class="kutucuk"><div><b>${d.degisiklik}</b><span>değişiklik / 180 gün</span></div><div><b>${d.yazarSayisi || '-'}</b><span>yazar</span></div><div><b>${d.sonDokunma ? Math.round((Date.now() - d.sonDokunma) / 86400000) : '-'}</b><span>gün önce</span></div></div>` : ''}
     ${simgeler.length ? `<h3>Simgeler</h3><ul>${simgeler.map(s => `<li>${s.ad}<span class="tur"> ${s.tur}</span></li>`).join('')}</ul>` : ''}
     <h3>Bunu kullananlar</h3><ul>${listeYap(bag.gelen, 'kaynak')}</ul>
     <h3>Bunun kullandıkları</h3><ul>${listeYap(bag.giden, 'hedef')}</ul>
@@ -496,6 +518,7 @@ document.getElementById('tema-dugme').addEventListener('click', temaDegistir);
 document.getElementById('akis-dugme').addEventListener('click', akisDegistir);
 document.getElementById('dis-dugme').addEventListener('click', disDegistir);
 document.getElementById('dongu-dugme').addEventListener('click', dongulariVurgula);
+document.getElementById('isi-dugme').addEventListener('click', isiDegistir);
 document.getElementById('png-dugme').addEventListener('click', pngDisaAktar);
 document.getElementById('svg-dugme').addEventListener('click', svgDisaAktar);
 document.getElementById('kaydet-dugme').addEventListener('click', konumlariKaydet);

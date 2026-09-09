@@ -1,0 +1,30 @@
+name: Hata / Bug
+description: Beklenmeyen davranis bildir / Report unexpected behaviour
+labels: [hata]
+body:
+  - type: textarea
+    id: ne-oldu
+    attributes:
+      label: Ne oldu / What happened
+    validations:
+      required: true
+  - type: textarea
+    id: beklenen
+    attributes:
+      label: Ne bekliyordun / What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: adimlar
+    attributes:
+      label: Yeniden uretim / Reproduction
+      description: Calistirdigin komut ve hedef deponun dili/boyutu
+      placeholder: node bin/tg.mjs ./ornek --gorunum dosya
+    validations:
+      required: true
+  - type: input
+    id: surum
+    attributes:
+      label: Node surumu ve isletim sistemi / Node version and OS
+    validations:
+      required: true

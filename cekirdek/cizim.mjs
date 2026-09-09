@@ -33,6 +33,8 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
         x: Math.round(d.x), y: Math.round(d.y),
         genislik: Math.round(d.genislik), yukseklik: Math.round(d.yukseklik),
         satirSayisi: d.satirSayisi || 0, uyeSayisi: d.uyeSayisi || 0,
+        degisiklik: d.degisiklik || 0, sonDokunma: d.sonDokunma || 0,
+        yazarSayisi: d.yazarSayisi || 0,
         simgeler: (d.simgeler || []).slice(0, 14)
       })),
       kenarlar: yerlesim.kenarlar.map(k => ({
@@ -55,7 +57,8 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
       gorunum: secenekler.gorunum || 'grup',
       tarandi: graf.tarandi,
       kesisme: yerlesim.kesisme,
-      katman: yerlesim.katmanSayisi
+      katman: yerlesim.katmanSayisi,
+      gecmisEnFazla: Math.max(0, ...yerlesim.dugumler.map(d => d.degisiklik || 0))
     }
   };
 
@@ -105,6 +108,7 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
 <div class="panel" id="alt">
   <button class="dugme" id="akis-dugme" title="a">akış</button>
   <button class="dugme" id="dongu-dugme">döngüler</button>
+  <button class="dugme" id="isi-dugme">değişim</button>
   <button class="dugme" id="dis-dugme">dış paketler</button>
   <button class="dugme" id="png-dugme">png</button>
   <button class="dugme" id="svg-dugme">svg</button>

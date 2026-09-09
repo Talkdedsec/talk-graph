@@ -1,56 +1,121 @@
 # talk-graph
 
-Kod tabanını tarar, bağımlılık grafiğini çıkarır ve tek dosyalık, gezilebilir bir HTML mimari haritası üretir.
-Elle JSON yazmak yok: girdi deponun kendisi.
+**English** · [Türkçe](README.tr.md)
 
-```
-node bin/tg.mjs C:\yol\projem
-```
+Turns a codebase into a navigable, single-file architecture map. No hand-written diagram
+specs: the input is the repository itself.
 
-Üretilen `cikti/projem.html` tek dosyadır — dış bağımlılığı yok, olduğu gibi paylaşılır.
-
-## Komutlar
-
-```
-tg <yol>                        haritayı üret ve tarayıcıda aç
-tg ciz <yol> [seçenekler]       harita üret
-tg tara <yol> --cikti g.json    ham grafı kaydet
-tg fark <eski.json> <yeni.json> iki tarama arasındaki değişim
-tg izle <yol>                   dosya değiştikçe haritayı tazele
+```bash
+node bin/tg.mjs C:\path\to\project
 ```
 
-## Seçenekler
+The generated `cikti/project.html` is one self-contained file — no runtime dependencies,
+no CDN, no build step. Share it as-is.
 
-| bayrak | işi |
+![Dependency map, dark theme](docs/gorsel/harita-koyu.png)
+
+## Why
+
+Diagram tools ask you to write the diagram. This one reads it. Every node is a real file or
+package, every edge a real import resolved to a real target, and every node links back to the
+line of code it came from.
+
+## Install
+
+Node 20 or newer. Nothing else.
+
+```bash
+git clone git@github.com:Talkdedsec/talk-graph.git
+cd talk-graph
+node --test "test/*.test.mjs"
+```
+
+Optionally link the CLI as `tg`:
+
+```bash
+npm link
+tg ./my-project
+```
+
+## Commands
+
+```
+tg <path>                       build the map and open it
+tg ciz <path> [options]         build the map
+tg tara <path> --cikti g.json   dump the raw graph
+tg fark <old.json> <new.json>   diff two scans
+tg izle <path>                  rebuild on file change
+```
+
+## Options
+
+| flag | effect |
 |---|---|
-| `--gorunum grup\|dosya` | paket seviyesi (varsayılan) ya da dosya seviyesi |
-| `--derinlik <n>` | grup yolu derinliği (varsayılan 2) |
-| `--odak <yol parçası>` | o düğümün komşuluğunu çiz |
-| `--cevre <n>` | odak yarıçapı (varsayılan 1) |
-| `--enfazla <n>` | çizilecek en fazla düğüm (varsayılan 120) |
-| `--yon sag\|asagi` | akış yönü |
-| `--dis` | dış paketleri de çiz (varsayılan dışarıda) |
-| `--konum <dosya>` | kaydedilmiş düğüm konumlarını uygula |
-| `--cikti <dosya>` | çıktı yolu |
+| `--gorunum grup\|dosya` | package level (default) or file level |
+| `--derinlik <n>` | grouping path depth (default 2) |
+| `--odak <path fragment>` | draw only that node's neighbourhood |
+| `--cevre <n>` | focus radius (default 1) |
+| `--enfazla <n>` | max nodes drawn (default 120) |
+| `--yon sag\|asagi` | flow direction |
+| `--dis` | include external packages (excluded by default) |
+| `--testyok` | drop test files |
+| `--gun <n>` | git history window in days (default 180) |
+| `--gecmisyok` | skip the git history layer |
+| `--konum <file>` | restore saved node positions |
+| `--cikti <file>` | output path |
 
-## Haritada
+## In the map
 
-- sürükle / tekerlek: gezinme, `f` sığdır, `/` arama, `t` tema, `a` akış animasyonu
-- düğüme tıkla: çağıranlar, bağımlılıklar, simgeler; `editörde aç` VS Code'da dosyayı açar
-- düğümü sürükle, `kaydet` ile konumları `.konum.json` olarak dışa aktar, sonraki üretimde `--konum` ile geri yükle
-- `png` / `svg`: haritayı dışa aktar
-- `döngüler`: dairesel bağımlılıkları izole eder
+| action | effect |
+|---|---|
+| drag / wheel | pan and zoom |
+| `f` | fit to screen |
+| `/` | search files, folders and symbols |
+| `t` | switch theme |
+| `a` | flow animation |
+| click a node | callers, dependencies, exported symbols |
+| `editörde aç` | open that file in VS Code |
+| drag a node | move it; `kaydet` exports positions, `--konum` restores them |
+| `döngüler` | isolate circular dependencies |
+| `değişim` | colour nodes by git change count |
+| `png` / `svg` | export the map |
 
-## Desteklenen diller
+![Selected node, light theme](docs/gorsel/harita-acik.png)
 
-TypeScript/JavaScript (tsconfig `paths` takma adları dahil), Python, Go (go.mod modül yolu),
-Rust (`crate::`/`mod`), C# (namespace), Lua, Ruby, PHP, Java.
+## Languages
 
-## Nasıl çalışır
+TypeScript/JavaScript (including `tsconfig` path aliases), Python, Go (module path from
+`go.mod`), Rust (`crate::` and `mod`), C# (namespace index), Lua, Ruby, PHP, Java.
 
-1. `cekirdek/tarama.mjs` — dosyaları gezer, dile göre import/simge çıkarır, hedefleri gerçek dosyalara çözer
-2. `cekirdek/graf.mjs` — fan-in/out, döngü (Tarjan), gruplama, budama, iki tarama arası fark
-3. `cekirdek/yerlesim.mjs` — katmanlı yerleşim: döngü kırma, katman atama, medyan sıralama, koordinat ataması, ortogonal yönlendirme
-4. `cekirdek/cizim.mjs` + `kanvas/` — tek dosyalık HTML, gömülü SVG sahnesi ve gezinme motoru
+Unresolved imports become external package nodes instead of being dropped.
 
-Bağımlılık yok, Node 20+ yeter.
+## How it works
+
+| stage | file | job |
+|---|---|---|
+| scan | `cekirdek/tarama.mjs` | walk files, extract imports and symbols per language, resolve targets to real files |
+| model | `cekirdek/graf.mjs` | fan-in/out, cycles (Tarjan), folder grouping, pruning, scan diff |
+| history | `cekirdek/gecmis.mjs` | change count, last touch and author count per file from `git log` |
+| layout | `cekirdek/yerlesim.mjs` | layered layout: cycle breaking, layer assignment, median ordering, coordinate assignment, orthogonal routing |
+| render | `cekirdek/cizim.mjs` + `kanvas/` | single-file HTML with an inline SVG scene and its viewer |
+
+Long edges skip the virtual-node chain and are drawn as curves instead, which is what keeps
+crossings low: on a 76-file Go repository the package map lands at 61 crossings in 42 ms.
+
+## Measurements
+
+| repository | files | edges | drawn | layers | crossings | time |
+|---|---|---|---|---|---|---|
+| Go, 76 files | 76 | 625 | 37 | 8 | 61 | 42 ms |
+| Next.js, 193 files | 193 | 1039 | 10 | 5 | 24 | 392 ms |
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md) — how the pipeline is put together
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
+
+## Licence
+
+Proprietary. All rights reserved — see [LICENSE](LICENSE).

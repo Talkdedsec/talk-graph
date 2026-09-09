@@ -98,8 +98,13 @@ export function zenginlestir(graf, secenekler = {}) {
 export function grupla(graf) {
   const gruplar = new Map();
   for (const d of graf.dugumler) {
-    if (!gruplar.has(d.grup)) gruplar.set(d.grup, { kimlik: 'grup:' + d.grup, ad: d.grup, uyeler: [], dis: d.dis });
-    gruplar.get(d.grup).uyeler.push(d.kimlik);
+    if (!gruplar.has(d.grup)) {
+      gruplar.set(d.grup, { kimlik: 'grup:' + d.grup, ad: d.grup, uyeler: [], dis: d.dis, degisiklik: 0, sonDokunma: 0 });
+    }
+    const g = gruplar.get(d.grup);
+    g.uyeler.push(d.kimlik);
+    g.degisiklik += d.degisiklik || 0;
+    g.sonDokunma = Math.max(g.sonDokunma, d.sonDokunma || 0);
   }
   const kenarlar = new Map();
   const grupBul = new Map(graf.dugumler.map(d => [d.kimlik, 'grup:' + d.grup]));
@@ -121,6 +126,8 @@ export function grupla(graf) {
       dis: g.dis,
       uyeSayisi: g.uyeler.length,
       uyeler: g.uyeler,
+      degisiklik: g.degisiklik,
+      sonDokunma: g.sonDokunma,
       simgeler: []
     })),
     kenarlar: [...kenarlar.values()],
