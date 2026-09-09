@@ -27,7 +27,7 @@ Node 20 or newer. Nothing else.
 ```bash
 git clone git@github.com:Talkdedsec/talk-graph.git
 cd talk-graph
-node --test "test/*.test.mjs"
+node --test
 ```
 
 Optionally link the CLI as `tg`:

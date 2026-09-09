@@ -7,7 +7,7 @@
     "tg": "bin/tg.mjs"
   },
   "scripts": {
-    "test": "node --test \"test/*.test.mjs\"",
+    "test": "node --test",
     "ciz": "node bin/tg.mjs"
   },
   "engines": {

@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: testler
-        run: node --test "test/*.test.mjs"
+        run: node --test
       - name: kendi haritasini uret
         run: node bin/tg.mjs . --acma --cikti cikti/talk-graph.html
       - name: cikti tek dosya mi
