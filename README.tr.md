@@ -22,6 +22,20 @@ Diyagram araçları diyagramı sana yazdırır. Bu onu okur. Her düğüm gerçe
 her kenar gerçek bir dosyaya çözülmüş gerçek bir import, ve her düğüm geldiği kod satırına
 geri bağlanır.
 
+![Simge görünümü: fonksiyonlar ve aralarındaki çağrılar](docs/gorsel/harita-simge.png)
+
+## Üç seviye
+
+| seviye | düğüm | kenar |
+|---|---|---|
+| `--gorunum grup` | paket / klasör | aralarındaki import |
+| `--gorunum dosya` | dosya | çözülmüş import |
+| `--gorunum simge` | fonksiyon, sınıf, tip | çağrı ya da kullanım, onu doğuran satırla |
+
+Simge seviyesi adlandırılmış import'ları işaret ettikleri simgeye çözer: düğüm bir fonksiyon,
+kenar bir çağrıdır. Grup kutuları dosyaya döner. Simgeye tıklamak dosyayı kendi satırında açar.
+TypeScript/JavaScript ve Python'u kapsar; diğer diller dosya düğümüne düşer.
+
 ## Kurulum
 
 Node 20 ve üstü. Başka bir şey gerekmez.
@@ -67,7 +81,8 @@ tg kume ./api                  # kodun gerçekte sahip olduğu modüller, iddia 
 
 | bayrak | işi |
 |---|---|
-| `--gorunum grup\|dosya` | paket seviyesi (varsayılan) ya da dosya seviyesi |
+| `--gorunum grup\|dosya\|simge` | paket (varsayılan), dosya ya da simge seviyesi |
+| `--hepsi` | simge görünümünde bağsız simgeleri de çiz |
 | `--derinlik <n>` | grup yolu derinliği (varsayılan 2) |
 | `--gruplama klasor\|topluluk` | klasöre göre grupla, ya da kodun gerçekten bağladığına göre |
 | `--tema <ad>` | açılış teması, bkz. [Temalar](docs/TEMALAR.md) |

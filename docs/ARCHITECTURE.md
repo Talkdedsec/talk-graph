@@ -2,7 +2,7 @@
 
 [Türkçe](MIMARI.md)
 
-Seven stages, each a plain ES module with no dependencies, connected by two data shapes.
+Nine stages, each a plain ES module with no dependencies, connected by two data shapes.
 
 ```
 repository ──► tarama ──► graf ──► gecmis ──► yerlesim ──► cizim ──► one HTML file
@@ -131,6 +131,30 @@ communities instead of folders.
 
 DOT, GraphML, CSV, Mermaid and raw JSON, all escaped for their format. `--gorunum grup` exports
 the collapsed package graph instead of the file graph.
+
+## 8. Symbol level — `cekirdek/simge.mjs`
+
+When `--gorunum simge` is asked for, the scan keeps two extra things per file: the names each
+import binds (`import { a, b as c }` → `a`, `c`) and every identifier occurrence with its line
+and whether it is followed by `(`.
+
+The symbol builder turns each declaration into a node (`file#name`), attributes every usage to
+the declaration that encloses its line, and resolves the target: a local name if the file
+declares it, otherwise the file its import binds it to — landing on that file's symbol of the
+same name, or on a synthetic `file#<modul>` node when the name is not declared there.
+
+Precision comes from the filters rather than from a parser: property accesses (`x.name`) are
+dropped, local matches must look like calls and be at least three characters, and only names
+that are declared or imported can produce an edge. That keeps false edges rare without a type
+checker. Coverage is TypeScript/JavaScript and Python; other languages keep file-level nodes.
+
+## 9. Column wrapping
+
+A call graph puts every leaf function in one layer, which on a real repository means a column
+thousands of pixels tall. When any layer exceeds `enFazlaSutunDugumu` (26), the layout reflows
+every layer into columns of that height placed side by side, drops the virtual chains and
+redraws the edges directly. On this repository's own symbol map that is the difference between
+a 6500-pixel column and a map that fits the screen.
 
 ## Testing
 

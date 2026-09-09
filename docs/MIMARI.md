@@ -2,7 +2,7 @@
 
 [English](ARCHITECTURE.md)
 
-Yedi aşama; her biri bağımlılığı olmayan düz bir ES modülü, iki veri şekliyle birbirine bağlı.
+Dokuz aşama; her biri bağımlılığı olmayan düz bir ES modülü, iki veri şekliyle birbirine bağlı.
 
 ```
 depo ──► tarama ──► graf ──► gecmis ──► yerlesim ──► cizim ──► tek HTML dosyası
@@ -129,6 +129,29 @@ toplulukları çizer.
 
 DOT, GraphML, CSV, Mermaid ve ham JSON; her biri kendi biçimine göre kaçırılmış. `--gorunum grup`
 dosya grafı yerine toplanmış paket grafını dışa aktarır.
+
+## 8. Simge seviyesi — `cekirdek/simge.mjs`
+
+`--gorunum simge` istendiğinde tarama dosya başına iki şey daha tutar: her import'un bağladığı
+adlar (`import { a, b as c }` → `a`, `c`) ve her tanımlayıcı geçişi — satırıyla ve ardından `(`
+gelip gelmediğiyle.
+
+Simge kurucusu her bildirimi bir düğüme çevirir (`dosya#ad`), her kullanımı satırını kapsayan
+bildirime yazar ve hedefi çözer: dosya o adı bildiriyorsa yerel, değilse import'un bağladığı
+dosya — orada aynı adlı simgeye, o ad orada bildirilmiyorsa sentetik `dosya#<modul>` düğümüne.
+
+Kesinlik ayrıştırıcıdan değil süzgeçlerden gelir: nokta ile erişim (`x.ad`) düşer, yerel
+eşleşmenin çağrı biçiminde ve en az üç karakter olması gerekir, ve yalnızca bildirilmiş ya da
+import edilmiş adlar kenar üretebilir. Tip denetleyicisi olmadan yanlış kenarı seyrek tutan şey
+bu. Kapsam TypeScript/JavaScript ve Python; diğer diller dosya düğümünde kalır.
+
+## 9. Sütun sarması
+
+Çağrı grafiği bütün yaprak fonksiyonları tek katmana koyar; gerçek bir depoda bu, binlerce
+piksel boyunda tek sütun demektir. Herhangi bir katman `enFazlaSutunDugumu`'nu (26) aştığında
+yerleşim bütün katmanları o yükseklikte yan yana sütunlara akıtır, sanal zincirleri düşürür ve
+kenarları doğrudan yeniden çizer. Bu deponun kendi simge haritasında fark, 6500 piksellik bir
+sütunla ekrana sığan bir harita arasındadır.
 
 ## Test
 

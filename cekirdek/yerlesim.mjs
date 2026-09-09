@@ -10,7 +10,9 @@ const VARSAYILAN = {
   yatayDolgu: 26,
   grupDolgusu: 22,
   siralamaTuru: 8,
-  enFazlaAciklik: 3
+  enFazlaAciklik: 3,
+  enFazlaSutunDugumu: 26,
+  sutunAraligi: 34
 };
 
 function kavisliYol(noktalar, yatay) {
@@ -323,8 +325,10 @@ export function yerlesimKur(graf, secenekler = {}) {
     }
   }
 
+  const sarildi = katmanlariSar(sirali, yerlesik, katmanGenislikleri, ay, yatay);
+
   const cizilenKenarlar = [];
-  for (const p of parcalar) {
+  for (const p of sarildi ? parcalar.map(p => ({ ...p, zincir: [p.kenar.kaynak, p.kenar.hedef], uzun: p.uzun || p.zincir.length > 2 })) : parcalar) {
     const noktalar = p.zincir.map((kimlik, i) => {
       const y = yerlesik.get(kimlik);
       if (!y) return null;
@@ -360,6 +364,41 @@ export function yerlesimKur(graf, secenekler = {}) {
     katmanSayisi: sirali.length,
     tuval: { x: enSol - 40, y: enUst - 40, genislik: enSag - enSol + 80, yukseklik: enAlt - enUst + 80 }
   };
+}
+
+function katmanlariSar(katmanlar, yerlesik, katmanGenislikleri, ay, yatay) {
+  const cap = ay.enFazlaSutunDugumu;
+  const gercek = katmanlar.map(kat => kat.filter(d => !d.sanal));
+  if (!cap || !gercek.some(kat => kat.length > cap)) return false;
+
+  let akan = 0;
+  for (let i = 0; i < gercek.length; i++) {
+    const kat = [...gercek[i]]
+      .map(d => yerlesik.get(d.kimlik))
+      .filter(Boolean)
+      .sort((a, b) => (yatay ? a.y - b.y : a.x - b.x));
+    if (!kat.length) continue;
+    const sutunSayisi = Math.ceil(kat.length / cap);
+    const sutunGenisligi = katmanGenislikleri[i] + ay.sutunAraligi;
+    for (let s = 0; s < sutunSayisi; s++) {
+      const parca = kat.slice(s * cap, (s + 1) * cap);
+      let imlec = 0;
+      for (const d of parca) {
+        if (yatay) {
+          d.x = akan + s * sutunGenisligi;
+          d.y = imlec;
+          imlec += d.yukseklik + ay.dugumAraligi;
+        } else {
+          d.y = akan + s * sutunGenisligi;
+          d.x = imlec;
+          imlec += d.genislik + ay.dugumAraligi;
+        }
+      }
+    }
+    akan += sutunSayisi * sutunGenisligi + ay.katmanAraligi;
+  }
+  for (const d of yerlesik.values()) if (d.sanal) yerlesik.delete(d.kimlik);
+  return true;
 }
 
 function grupKutulari(dugumler, ay) {
