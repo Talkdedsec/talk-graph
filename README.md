@@ -10,7 +10,7 @@ specs: the input is the repository itself.
 **[Open the live demo →](https://talkdedsec.github.io/talk-graph/)** — this repository, mapped by itself.
 
 ```bash
-npx talk-graph ./my-project
+npx @talkdedsec/talk-graph ./my-project
 ```
 
 The generated `cikti/my-project.html` is one self-contained file — no runtime dependencies,
@@ -57,8 +57,8 @@ reader would name by hand: `finding.Finding`, `cli.Execute`, `fetch.Client`, `sc
 Node 20 or newer. Nothing else.
 
 ```bash
-npx talk-graph ./my-project          # no install
-npm install -g talk-graph && tg .    # or install the tg command
+npx @talkdedsec/talk-graph ./my-project          # no install
+npm install -g @talkdedsec/talk-graph && tg .    # or install the tg command
 ```
 
 From source:
