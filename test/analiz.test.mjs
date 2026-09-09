@@ -81,6 +81,29 @@ test('csv basligi ve satir sayisi tutar', () => {
   assert.equal(satirlar.length - 1, graf.kenarlar.length);
 });
 
+test('gecersiz secenek degerleri CLI tarafindan reddedilir', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const kos = (...arg) => {
+    try {
+      execFileSync(process.execPath, ['bin/tg.mjs', ...arg], { encoding: 'utf8', stdio: 'pipe' });
+      return { kod: 0, hata: '' };
+    } catch (e) {
+      return { kod: e.status, hata: String(e.stderr || '') };
+    }
+  };
+  const yanlisGorunum = kos('ciz', '.', '--gorunum', 'sacma', '--acma');
+  assert.equal(yanlisGorunum.kod, 1);
+  assert.match(yanlisGorunum.hata, /gecerli: grup, dosya, simge/);
+
+  const yokYol = kos('ciz', './boyle-bir-klasor-yok', '--acma');
+  assert.equal(yokYol.kod, 1);
+  assert.match(yokYol.hata, /yol bulunamadi/);
+
+  const yanlisSayi = kos('ciz', '.', '--enfazla', 'cok', '--acma');
+  assert.equal(yanlisSayi.kod, 1);
+  assert.match(yanlisSayi.hata, /bir sayi olmali/);
+});
+
 test('mermaid ciktisi flowchart olarak baslar', () => {
   const metin = bicimler.mermaid(graf);
   assert.match(metin, /^flowchart LR/);

@@ -164,7 +164,8 @@ crossings low: on a 76-file Go repository the package map lands at 61 crossings 
 | repository | files | edges | drawn | layers | crossings | time |
 |---|---|---|---|---|---|---|
 | Go, 76 files | 76 | 625 | 37 | 8 | 61 | 42 ms |
-| Next.js, 193 files | 193 | 1039 | 10 | 5 | 24 | 392 ms |
+| Go, symbol level | 547 symbols | 1261 | 150 | 10 | 6474 | 0.1 s |
+| Next.js, 193 files | 193 | 1039 | 9 | 4 | 2 | 0.4 s |
 
 ## Documentation
 

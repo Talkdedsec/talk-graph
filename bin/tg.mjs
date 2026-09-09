@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { writeFileSync, readFileSync, existsSync, mkdirSync, watch } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync, watch } from 'node:fs';
 import { resolve, dirname, join, basename } from 'node:path';
 import { spawn } from 'node:child_process';
 import { tara } from '../cekirdek/tarama.mjs';
@@ -66,12 +66,57 @@ function tarayiciyaGonder(yol) {
   spawn(komut, arg, { detached: true, stdio: 'ignore' }).unref();
 }
 
+const GECERLI = {
+  gorunum: ['grup', 'dosya', 'simge'],
+  yon: ['sag', 'asagi'],
+  gruplama: ['klasor', 'topluluk'],
+  bicim: ['dot', 'graphml', 'csv', 'mermaid', 'json'],
+  tema: ['gece', 'gunduz', 'kagit', 'murekkep', 'terminal', 'bakir', 'buz', 'mor', 'orman', 'kontrast', 'gazete']
+};
+
+function secenekleriDogrula(s) {
+  for (const [ad, liste] of Object.entries(GECERLI)) {
+    if (s[ad] && !liste.includes(s[ad])) {
+      console.error(`--${ad} icin gecersiz deger: ${s[ad]}`);
+      console.error('  gecerli: ' + liste.join(', '));
+      process.exit(1);
+    }
+  }
+  for (const sayisal of ['derinlik', 'cevre', 'enfazla', 'gun']) {
+    if (s[sayisal] !== undefined && !Number.isFinite(Number(s[sayisal]))) {
+      console.error(`--${sayisal} bir sayi olmali: ${s[sayisal]}`);
+      process.exit(1);
+    }
+  }
+}
+
+function hedefiDogrula(yol) {
+  if (yol.endsWith('.json')) {
+    if (existsSync(yol)) return;
+    console.error('graf dosyasi bulunamadi: ' + yol);
+    process.exit(1);
+  }
+  if (!existsSync(yol)) {
+    console.error('yol bulunamadi: ' + resolve(yol));
+    process.exit(1);
+  }
+  if (!statSync(yol).isDirectory()) {
+    console.error('bir klasor bekleniyordu: ' + resolve(yol));
+    process.exit(1);
+  }
+}
+
 function grafHazirla(kaynak, s) {
   const ayar = { grupSeviyesi: Number(s.derinlik) || 2 };
   const simgeMi = s.gorunum === 'simge';
   const ham = (kaynak.endsWith('.json') && existsSync(kaynak))
     ? JSON.parse(readFileSync(kaynak, 'utf8'))
     : tara(kaynak, { testYok: !!s.testyok, simge: simgeMi });
+  if (!ham.dugumler.length) {
+    console.error(`${resolve(kaynak)} altinda taranacak kaynak dosya yok.`);
+    console.error('  desteklenen uzantilar: .ts .tsx .js .jsx .mjs .cjs .py .go .rs .cs .lua .rb .php .java .vue .svelte');
+    process.exit(1);
+  }
   let graf = zenginlestir(ham, ayar);
   if (!s.gecmisyok) graf = gecmisiIsle(graf, Number(s.gun) || 180);
   if (!simgeMi) return graf;
@@ -171,6 +216,8 @@ const bilinen = ['ciz', 'tara', 'fark', 'izle', 'anlat', 'yol', 'denetle', 'kume
 const komut = bilinen.includes(argv[0]) ? argv.shift() : 'ciz';
 const s = secenekleriAyikla(argv);
 const hedef = s._[0] || '.';
+secenekleriDogrula(s);
+if (!['fark'].includes(komut)) hedefiDogrula(hedef);
 
 if (komut === 'tara') {
   const graf = grafHazirla(hedef, s);
