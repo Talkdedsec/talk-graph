@@ -35,6 +35,7 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
         satirSayisi: d.satirSayisi || 0, uyeSayisi: d.uyeSayisi || 0,
         degisiklik: d.degisiklik || 0, sonDokunma: d.sonDokunma || 0,
         dosya: d.dosya || '', satir: d.satir || 0, tur: d.tur || '',
+        grup: d.grup || '', dongu: d.dongu ?? null,
         yazarSayisi: d.yazarSayisi || 0,
         simgeler: (d.simgeler || []).slice(0, 14)
       })),
@@ -108,6 +109,35 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
 <div class="panel" id="sonuc"></div>
 <div class="panel" id="detay"></div>
 
+<div class="panel" id="yan">
+  <div class="yan-baslik">
+    <span>gruplar</span>
+    <button class="kucuk-dugme" id="tumu-dugme">tümü</button>
+  </div>
+  <div id="grup-listesi"></div>
+  <div class="yan-baslik ayirac"><span>bağ türü</span></div>
+  <div id="kenar-listesi"></div>
+</div>
+
+<button class="panel yuvarlak" id="yan-dugme" title="gruplar (g)">☰</button>
+
+<div class="panel" id="yardim">
+  <h3>kısayollar</h3>
+  <dl>
+    <dt>/</dt><dd>ara</dd>
+    <dt>f</dt><dd>ekrana sığdır</dd>
+    <dt>g</dt><dd>grup panelini aç/kapat</dd>
+    <dt>t · shift+t</dt><dd>sonraki · önceki tema</dd>
+    <dt>a</dt><dd>akış animasyonu</dd>
+    <dt>c</dt><dd>döngüleri izole et</dd>
+    <dt>1 · 2 · 3</dt><dd>yakınlaştır · uzaklaştır · sığdır</dd>
+    <dt>esc</dt><dd>seçimi bırak</dd>
+    <dt>?</dt><dd>bu pencere</dd>
+  </dl>
+  <p class="ipucu">düğümü sürüklersen konumu değişir, <b>kaydet</b> ile dışa aktarılır ve
+  <code>--konum</code> ile geri yüklenir.</p>
+</div>
+
 <div class="panel" id="alt">
   <button class="dugme" id="akis-dugme" title="a">akış</button>
   <button class="dugme" id="dongu-dugme">döngüler</button>
@@ -116,7 +146,8 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
   <button class="dugme" id="png-dugme">png</button>
   <button class="dugme" id="svg-dugme">svg</button>
   <button class="dugme" id="kaydet-dugme">kaydet</button>
-  <span class="ipucu">sürükle · tekerlek yakınlaştırır · düğümü taşı</span>
+  <button class="dugme" id="yardim-dugme" title="?">?</button>
+  <span class="gosterge" id="gosterge"></span>
 </div>
 
 <div id="kucukharita"></div>

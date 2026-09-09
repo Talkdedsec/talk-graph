@@ -5,6 +5,19 @@ const kenarlar = veri.yerlesim.kenarlar;
 const gruplar = veri.yerlesim.gruplar || [];
 const dugumHarita = new Map(dugumler.map(d => [d.kimlik, d]));
 
+function grupTonu(ad) {
+  let h = 0;
+  for (let i = 0; i < ad.length; i++) h = (h * 31 + ad.charCodeAt(i)) >>> 0;
+  return (h % 12) * 30 + ((h >> 8) % 14);
+}
+
+const grupRenkleri = new Map();
+function grupRengi(ad) {
+  if (!ad) return 'var(--cizgi-guclu)';
+  if (!grupRenkleri.has(ad)) grupRenkleri.set(ad, `hsl(${grupTonu(ad)} 64% 58%)`);
+  return grupRenkleri.get(ad);
+}
+
 const DIL_RENGI = {
   ts: '#4c9aff', js: '#f2c744', python: '#5cc8a8', rust: '#ff8a5c',
   csharp: '#a77cff', go: '#4fd4e0', lua: '#5c7cff', ruby: '#ff5c6c',
@@ -30,6 +43,11 @@ for (const k of kenarlar) {
   komsular.get(k.kaynak)?.giden.push(k);
   komsular.get(k.hedef)?.gelen.push(k);
 }
+
+const dereceler = dugumler
+  .map(d => (komsular.get(d.kimlik)?.gelen.length || 0) + (komsular.get(d.kimlik)?.giden.length || 0))
+  .sort((a, b) => a - b);
+const onemEsigi = Math.max(3, dereceler[Math.floor(dereceler.length * 0.85)] || 3);
 
 function ogeKur(ad, ozellikler = {}, ebeveyn = null) {
   const o = document.createElementNS(AS, ad);
@@ -91,7 +109,7 @@ function dugumleriCiz() {
     }, g);
     ogeKur('rect', {
       class: 'serit', x: 0, y: 0, width: 3.5, height: d.yukseklik, rx: 2,
-      fill: DIL_RENGI[d.dil] || 'var(--cizgi-guclu)'
+      fill: d.grup ? grupRengi(d.grup) : (DIL_RENGI[d.dil] || 'var(--cizgi-guclu)')
     }, g);
     if (d.degisiklik) {
       ogeKur('rect', {
@@ -106,7 +124,9 @@ function dugumleriCiz() {
       const alt = ogeKur('text', { class: 'alt', x: 14, y: 34 }, g);
       alt.textContent = kisalt(altMetin, Math.floor((d.genislik - 30) / 5.9));
     }
-    const derece = (komsular.get(d.kimlik)?.gelen.length || 0);
+    const bag = komsular.get(d.kimlik);
+    if (((bag?.gelen.length || 0) + (bag?.giden.length || 0)) >= onemEsigi) g.classList.add('onemli');
+    const derece = (bag?.gelen.length || 0);
     if (derece > 0) {
       const r = ogeKur('text', { class: 'rozet', x: d.genislik - 12, y: 17, 'text-anchor': 'end' }, g);
       r.textContent = '←' + derece;
@@ -154,20 +174,30 @@ function durumuOku() {
   } catch { return null; }
 }
 
+function ayrintiSeviyesi() {
+  const o = gorunum.olcek;
+  document.body.classList.toggle('uzak', o < 0.5);
+  document.body.classList.toggle('cok-uzak', o < 0.24);
+}
+
 function gorunumUygula() {
   sahne.setAttribute('transform', `translate(${gorunum.x} ${gorunum.y}) scale(${gorunum.olcek})`);
+  ayrintiSeviyesi();
   kucukHaritaGuncelle();
   durumuYaz();
 }
 
 function sigdir(hedefKutu) {
   const kutu = hedefKutu || veri.yerlesim.tuval;
-  const ustBosluk = 62, altBosluk = 58, yanBosluk = 24;
-  const g = tuval.clientWidth - yanBosluk * 2;
+  const yanAcik = document.getElementById('yan')?.classList.contains('acik');
+  const solBosluk = yanAcik ? 266 : 24;
+  const sagBosluk = document.getElementById('detay')?.style.display === 'block' ? 348 : 24;
+  const ustBosluk = 62, altBosluk = 58;
+  const g = tuval.clientWidth - solBosluk - sagBosluk;
   const y = tuval.clientHeight - ustBosluk - altBosluk;
   const olcek = Math.min(g / kutu.genislik, y / kutu.yukseklik, 1.6);
   gorunum.olcek = olcek;
-  gorunum.x = yanBosluk + g / 2 - (kutu.x + kutu.genislik / 2) * olcek;
+  gorunum.x = solBosluk + g / 2 - (kutu.x + kutu.genislik / 2) * olcek;
   gorunum.y = ustBosluk + y / 2 - (kutu.y + kutu.yukseklik / 2) * olcek;
   gorunumUygula();
 }
@@ -620,3 +650,166 @@ if (kayitliDurum) {
   sigdir();
 }
 window.addEventListener('resize', () => kucukHaritaGuncelle());
+
+const KENAR_ETIKETI = {
+  'ice-aktarim': 'içe aktarım',
+  'dis-bagimlilik': 'dış bağımlılık',
+  cagri: 'çağrı',
+  referans: 'referans',
+  metot: 'metot',
+  icerir: 'içerir'
+};
+
+const kapaliGruplar = new Set();
+const kapaliKenarTurleri = new Set();
+
+function grupSayilari() {
+  const sayim = new Map();
+  for (const d of dugumler) {
+    const ad = d.grup || '(gruplanmamış)';
+    sayim.set(ad, (sayim.get(ad) || 0) + 1);
+  }
+  return [...sayim.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
+}
+
+function kenarTuruSayilari() {
+  const sayim = new Map();
+  for (const k of kenarlar) sayim.set(k.tur, (sayim.get(k.tur) || 0) + 1);
+  return [...sayim.entries()].sort((a, b) => b[1] - a[1]);
+}
+
+function suzgeciUygula() {
+  let gorunenDugum = 0, gorunenKenar = 0;
+  for (const d of dugumler) {
+    const gizli = kapaliGruplar.has(d.grup || '(gruplanmamış)') || (!disGoster && d.dis);
+    const oge = dugumOge.get(d.kimlik);
+    if (oge) oge.style.display = gizli ? 'none' : '';
+    if (!gizli) gorunenDugum++;
+  }
+  for (const [k, oge] of kenarOge) {
+    const a = dugumHarita.get(k.kaynak), b = dugumHarita.get(k.hedef);
+    const gizli = kapaliKenarTurleri.has(k.tur) ||
+      !a || !b ||
+      kapaliGruplar.has(a.grup || '(gruplanmamış)') ||
+      kapaliGruplar.has(b.grup || '(gruplanmamış)') ||
+      (!disGoster && (a.dis || b.dis));
+    oge.grup.style.display = gizli ? 'none' : '';
+    if (!gizli) gorunenKenar++;
+  }
+  const g = document.getElementById('gosterge');
+  if (g) {
+    const tumu = kapaliGruplar.size === 0 && kapaliKenarTurleri.size === 0;
+    g.textContent = tumu
+      ? `${dugumler.length} düğüm · ${kenarlar.length} bağ`
+      : `${gorunenDugum}/${dugumler.length} düğüm · ${gorunenKenar}/${kenarlar.length} bağ`;
+  }
+  for (const oge of document.querySelectorAll('#grup-listesi .suzgec')) {
+    oge.classList.toggle('kapali', kapaliGruplar.has(oge.dataset.grup));
+  }
+  for (const oge of document.querySelectorAll('#kenar-listesi .suzgec')) {
+    oge.classList.toggle('kapali', kapaliKenarTurleri.has(oge.dataset.kenar));
+  }
+}
+
+function yanPaneliKur() {
+  const gruplar = grupSayilari();
+  const grupKutu = document.getElementById('grup-listesi');
+  grupKutu.innerHTML = gruplar.map(([ad, sayi]) => `
+    <button class="suzgec" data-grup="${ad.replace(/"/g, '&quot;')}">
+      <span class="benek" style="background:${grupRengi(ad)}"></span>
+      <span class="ad" title="${ad.replace(/"/g, '&quot;')}">${ad}</span>
+      <span class="sayi">${sayi}</span>
+    </button>`).join('');
+  for (const oge of grupKutu.querySelectorAll('.suzgec')) {
+    oge.addEventListener('click', () => {
+      const ad = oge.dataset.grup;
+      if (kapaliGruplar.has(ad)) kapaliGruplar.delete(ad); else kapaliGruplar.add(ad);
+      suzgeciUygula();
+    });
+  }
+
+  const kenarKutu = document.getElementById('kenar-listesi');
+  kenarKutu.innerHTML = kenarTuruSayilari().map(([tur, sayi]) => `
+    <button class="suzgec" data-kenar="${tur}">
+      <span class="cizgi-ornek ${tur}"></span>
+      <span class="ad">${KENAR_ETIKETI[tur] || tur}</span>
+      <span class="sayi">${sayi}</span>
+    </button>`).join('');
+  for (const oge of kenarKutu.querySelectorAll('.suzgec')) {
+    oge.addEventListener('click', () => {
+      const tur = oge.dataset.kenar;
+      if (kapaliKenarTurleri.has(tur)) kapaliKenarTurleri.delete(tur); else kapaliKenarTurleri.add(tur);
+      suzgeciUygula();
+    });
+  }
+
+  document.getElementById('tumu-dugme').addEventListener('click', () => {
+    if (kapaliGruplar.size || kapaliKenarTurleri.size) {
+      kapaliGruplar.clear();
+      kapaliKenarTurleri.clear();
+    } else {
+      for (const [ad] of gruplar) kapaliGruplar.add(ad);
+    }
+    suzgeciUygula();
+  });
+  suzgeciUygula();
+}
+
+function yanPaneliDegistir() {
+  const acik = document.getElementById('yan').classList.toggle('acik');
+  document.getElementById('yan-dugme').style.display = acik ? 'none' : '';
+}
+
+function yardimDegistir() {
+  document.getElementById('yardim').classList.toggle('acik');
+}
+
+const kenarIpucu = document.createElement('div');
+kenarIpucu.id = 'kenar-ipucu';
+document.body.appendChild(kenarIpucu);
+
+function kenarIpucuKur() {
+  for (const [k, oge] of kenarOge) {
+    const a = dugumHarita.get(k.kaynak), b = dugumHarita.get(k.hedef);
+    if (!a || !b) continue;
+    oge.yol.style.pointerEvents = 'stroke';
+    oge.yol.addEventListener('pointerenter', e => {
+      kenarIpucu.textContent = `${a.ad} → ${b.ad}  ${KENAR_ETIKETI[k.tur] || k.tur}${k.satir ? ' :' + k.satir : ''}`;
+      kenarIpucu.style.left = (e.clientX + 14) + 'px';
+      kenarIpucu.style.top = (e.clientY + 14) + 'px';
+      kenarIpucu.classList.add('gorunur');
+      oge.yol.classList.add('vurgulu');
+    });
+    oge.yol.addEventListener('pointerleave', () => {
+      kenarIpucu.classList.remove('gorunur');
+      if (!secili) oge.yol.classList.remove('vurgulu');
+    });
+  }
+}
+
+document.getElementById('yan-dugme').addEventListener('click', yanPaneliDegistir);
+document.getElementById('yardim-dugme').addEventListener('click', yardimDegistir);
+document.getElementById('yardim').addEventListener('click', yardimDegistir);
+
+document.addEventListener('keydown', e => {
+  if (e.target === araKutu) return;
+  if (e.key === 'g') yanPaneliDegistir();
+  if (e.key === '?') yardimDegistir();
+  if (e.key === 'c') dongulariVurgula();
+  if (e.key === '1' || e.key === '2') {
+    const carpan = e.key === '1' ? 1.25 : 0.8;
+    const merkezX = tuval.clientWidth / 2, merkezY = tuval.clientHeight / 2;
+    const yeni = Math.max(0.06, Math.min(4, gorunum.olcek * carpan));
+    const oran = yeni / gorunum.olcek;
+    gorunum.x = merkezX - (merkezX - gorunum.x) * oran;
+    gorunum.y = merkezY - (merkezY - gorunum.y) * oran;
+    gorunum.olcek = yeni;
+    gorunumUygula();
+  }
+  if (e.key === '3') sigdir();
+  if (e.key === 'Escape') document.getElementById('yardim').classList.remove('acik');
+});
+
+yanPaneliKur();
+kenarIpucuKur();
+ayrintiSeviyesi();
