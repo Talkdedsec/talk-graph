@@ -177,4 +177,6 @@ Uzun kenarlar sanal düğüm zincirine girmez, eğri olarak çizilir; kesişmeyi
 
 ## Lisans
 
-Özel mülk. Tüm hakları saklıdır — [LICENSE](LICENSE).
+[PolyForm Noncommercial 1.0.0](LICENSE) — ticari olmayan her kullanım serbest: kişisel iş,
+araştırma, eğitim, hayır kurumu, kamu. Satmak ya da ticari bir hizmetin içinde çalıştırmak
+ayrı lisans ister: talkdedsec@proton.me.

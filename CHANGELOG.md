@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning: [SemVer](https://semver.org/lang/tr/).
 
+## [0.6.0] — 2026-09-09
+
+### Changed · Degisen
+
+- **Licence: PolyForm Noncommercial 1.0.0.** Free for any noncommercial purpose — personal work,
+  research, teaching, charities, government. Selling it or running it inside a commercial
+  service needs a separate licence from the copyright holder.
+  *Lisans: ticari olmayan her kullanim serbest, satis ve ticari hizmet ayri lisans ister.*
+- **Every screenshot is now the tool mapping itself.** The previous images came from a private
+  repository and exposed its internal package names; all 16 were regenerated from this
+  repository, which also makes them reproducible by anyone who clones it.
+  *Butun ekran goruntuleri araci kendi haritasini cizerken alindi; onceki gorseller ozel bir
+  deponun ic yapisini gosteriyordu.*
+
+[0.6.0]: https://github.com/Talkdedsec/talk-graph/releases/tag/v0.6.0
+
 ## [0.5.1] — 2026-09-09
 
 ### Fixed · Duzeltilen
