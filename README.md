@@ -42,11 +42,25 @@ tg ./my-project
 ## Commands
 
 ```
-tg <path>                       build the map and open it
-tg ciz <path> [options]         build the map
-tg tara <path> --cikti g.json   dump the raw graph
-tg fark <old.json> <new.json>   diff two scans
-tg izle <path>                  rebuild on file change
+tg <path>                        build the map and open it
+tg ciz <path> [options]          build the map
+tg tara <path> --cikti g.json    dump the raw graph
+tg anlat <path> <search>         explain one node: role, callers, dependencies
+tg yol <path> <a> <b>            shortest chain between two nodes
+tg denetle <path>                health report: cycles, god nodes, risky files
+tg kume <path>                   find communities by connectivity, compare to folders
+tg disaaktar <path> --bicim dot  dot | graphml | csv | mermaid | json
+tg fark <old.json> <new.json>    diff two scans
+tg izle <path>                   rebuild on file change
+```
+
+### What the analysis commands answer
+
+```bash
+tg anlat ./api order.ts     # who calls this, what it pulls in, is it in a cycle
+tg yol ./api route.ts db.ts # the exact import chain that connects them, with line numbers
+tg denetle ./api            # cycles, over-connected nodes, files that change and are depended on
+tg kume ./api               # modules the code actually has, versus the folders it claims
 ```
 
 ## Options
@@ -55,6 +69,8 @@ tg izle <path>                  rebuild on file change
 |---|---|
 | `--gorunum grup\|dosya` | package level (default) or file level |
 | `--derinlik <n>` | grouping path depth (default 2) |
+| `--gruplama klasor\|topluluk` | group by folder, or by what the code actually connects |
+| `--tema <ad>` | starting theme, see [Themes](docs/TEMALAR.md) |
 | `--odak <path fragment>` | draw only that node's neighbourhood |
 | `--cevre <n>` | focus radius (default 1) |
 | `--enfazla <n>` | max nodes drawn (default 120) |
@@ -73,7 +89,7 @@ tg izle <path>                  rebuild on file change
 | drag / wheel | pan and zoom |
 | `f` | fit to screen |
 | `/` | search files, folders and symbols |
-| `t` | switch theme |
+| `t` / `Shift+t` | next / previous theme (11 of them) |
 | `a` | flow animation |
 | click a node | callers, dependencies, exported symbols |
 | `editörde aç` | open that file in VS Code |
@@ -99,6 +115,8 @@ Unresolved imports become external package nodes instead of being dropped.
 | model | `cekirdek/graf.mjs` | fan-in/out, cycles (Tarjan), folder grouping, pruning, scan diff |
 | history | `cekirdek/gecmis.mjs` | change count, last touch and author count per file from `git log` |
 | layout | `cekirdek/yerlesim.mjs` | layered layout: cycle breaking, layer assignment, median ordering, coordinate assignment, orthogonal routing |
+| analysis | `cekirdek/analiz.mjs` | node search, explanation, shortest path, health report, modularity clustering |
+| export | `cekirdek/disaaktar.mjs` | dot, graphml, csv, mermaid, json |
 | render | `cekirdek/cizim.mjs` + `kanvas/` | single-file HTML with an inline SVG scene and its viewer |
 
 Long edges skip the virtual-node chain and are drawn as curves instead, which is what keeps
@@ -114,6 +132,7 @@ crossings low: on a 76-file Go repository the package map lands at 61 crossings 
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) — how the pipeline is put together
+- [Themes](docs/TEMALAR.md) — the eleven built-in themes and how to add one
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)

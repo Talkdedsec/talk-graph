@@ -2,11 +2,12 @@
 
 [Türkçe](MIMARI.md)
 
-Five stages, each a plain ES module with no dependencies, connected by two data shapes.
+Seven stages, each a plain ES module with no dependencies, connected by two data shapes.
 
 ```
 repository ──► tarama ──► graf ──► gecmis ──► yerlesim ──► cizim ──► one HTML file
                  scan     model    history     layout      render
+                            └──► analiz / disaaktar ──► report, dot, graphml, csv, mermaid
 ```
 
 ## Data shapes
@@ -105,9 +106,35 @@ highlighting, search over paths and symbols, the detail panel, the minimap, the 
 theme switching, position export and PNG/SVG export. For export it clones the SVG, injects the
 resolved theme variables as a `:root` block and a background rect, then serialises.
 
+## 6. Analysis — `cekirdek/analiz.mjs`
+
+Search scores an exact identifier above a filename above a stem above a path fragment, with a
+penalty for test files, so `finding` resolves to `finding.go` rather than `finding_test.go`.
+
+`anlat` classifies a node's role from its degree shape — entry point, leaf, shared core,
+orchestrator, middle layer — and reports Martin instability (`out / (in + out)`), cycle
+membership, callers and dependencies with line numbers.
+
+`enKisaYol` is a BFS over the directed graph, optionally undirected, returning each hop with the
+import line that makes it.
+
+`denetle` reports cycles, nodes wired above three times the median degree, fragile nodes (high
+fan-in *and* high fan-out), the longest acyclic dependency chain, files that both change often
+and are depended on, and orphans.
+
+`topluluklar` runs modularity optimisation (Louvain's local-moving phase, weighted by edge
+multiplicity) and reports each community with the folders it spans — a community crossing many
+folders is a module the directory tree does not admit to. `--gruplama topluluk` draws those
+communities instead of folders.
+
+## 7. Export — `cekirdek/disaaktar.mjs`
+
+DOT, GraphML, CSV, Mermaid and raw JSON, all escaped for their format. `--gorunum grup` exports
+the collapsed package graph instead of the file graph.
+
 ## Testing
 
-`test/ornek-kur.mjs` writes a small fixture repository into a temp directory — a cycle, a
+`araclar/ornek-depo.mjs` writes a small fixture repository into a temp directory — a cycle, a
 shared utility, an unresolvable import, a Python package and a test file — and the suites assert
 resolution, graph metrics, layout invariants (no overlap within a layer, every node inside the
 canvas, every edge with a valid path) and that the produced HTML is genuinely self-contained.

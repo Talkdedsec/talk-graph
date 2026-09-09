@@ -2,6 +2,32 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning: [SemVer](https://semver.org/lang/tr/).
 
+## [0.2.0] — 2026-09-09
+
+### Added · Eklenen
+
+- **Eleven themes** — gece, gunduz, kagit, murekkep, terminal, bakir, buz, mor, orman, kontrast,
+  gazete. `--tema` picks the starting one, the `tema` menu and `t` / `Shift+t` switch inside the
+  map, the choice is remembered per browser, and export follows the theme on screen.
+  *On bir tema; `--tema` ile acilis, harita icinde menu ve `t` ile gecis, tarayici basina hatirlanir.*
+- **`tg anlat`** — explains one node: role inferred from degree shape, Martin instability, cycle
+  membership, callers and dependencies with import line numbers, exported symbols.
+  *Bir dugumu aciklar: rol, kararsizlik, dongu uyeligi, cagiranlar ve bagimliliklar.*
+- **`tg yol`** — shortest import chain between two nodes, `--yonsuz` for the undirected question.
+  *Iki dugum arasindaki en kisa import zinciri.*
+- **`tg denetle`** — health report: cycles, nodes above three times the median degree, fragile
+  nodes, longest acyclic chain, files that both change often and are depended on, orphans.
+  *Saglik raporu: donguler, tanri dugumler, kirilganlar, en uzun zincir, riskli dosyalar, yalnizlar.*
+- **`tg kume`** — modularity clustering (Louvain local moving) reporting each community with the
+  folders it spans; `--gruplama topluluk` draws communities instead of folders.
+  *Modulerlik kumeleme; `--gruplama topluluk` klasor yerine toplulugu cizer.*
+- **`tg disaaktar`** — DOT, GraphML, CSV, Mermaid and JSON output.
+- `--json` on every analysis command, for piping into other tools.
+- 11 more tests (30 total) covering search ranking, roles, path finding, health report,
+  community partition integrity and every export format.
+
+[0.2.0]: https://github.com/Talkdedsec/talk-graph/releases/tag/v0.2.0
+
 ## [0.1.0] — 2026-09-09
 
 First working version. İlk çalışan sürüm.

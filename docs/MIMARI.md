@@ -2,10 +2,11 @@
 
 [English](ARCHITECTURE.md)
 
-Beş aşama; her biri bağımlılığı olmayan düz bir ES modülü, iki veri şekliyle birbirine bağlı.
+Yedi aşama; her biri bağımlılığı olmayan düz bir ES modülü, iki veri şekliyle birbirine bağlı.
 
 ```
 depo ──► tarama ──► graf ──► gecmis ──► yerlesim ──► cizim ──► tek HTML dosyası
+                        └──► analiz / disaaktar ──► rapor, dot, graphml, csv, mermaid
 ```
 
 ## Veri şekilleri
@@ -103,9 +104,35 @@ simge araması, detay paneli, mini harita, ısı katmanı, tema, konum dışa ak
 dışa aktarma ondadır. Dışa aktarmada SVG klonlanır, çözülmüş tema değişkenleri `:root` bloğu ve
 bir zemin dikdörtgeni olarak enjekte edilir, sonra seri hale getirilir.
 
+## 6. Çözümleme — `cekirdek/analiz.mjs`
+
+Arama, tam kimliği dosya adının, onu gövdenin, onu da yol parçasının önüne koyar ve test
+dosyalarını cezalandırır; böylece `finding`, `finding_test.go` yerine `finding.go`'ya düşer.
+
+`anlat` düğümün rolünü derece biçiminden çıkarır — giriş noktası, yaprak, paylaşılan çekirdek,
+orkestratör, ara katman — ve Martin kararsızlığını (`giden / (gelen + giden)`), döngü üyeliğini,
+çağıranları ve bağımlılıkları satır numarasıyla verir.
+
+`enKisaYol` yönlü graf üzerinde BFS'tir, istenirse yönsüz çalışır; her adımı onu doğuran import
+satırıyla döndürür.
+
+`denetle` döngüleri, ortanca derecenin üç katından fazla bağlı düğümleri, kırılganları (hem yüksek
+fan-in hem yüksek fan-out), en uzun döngüsüz bağımlılık zincirini, hem çok değişen hem çok
+bağımlı olunan dosyaları ve yalnızları raporlar.
+
+`topluluklar` modülerlik eniyilemesi çalıştırır (Louvain'in yerel taşıma evresi, kenar
+çokluğuyla ağırlıklı) ve her topluluğu yayıldığı klasörlerle verir — çok klasöre yayılan bir
+topluluk, dizin ağacının itiraf etmediği bir modüldür. `--gruplama topluluk` klasör yerine bu
+toplulukları çizer.
+
+## 7. Dışa aktarma — `cekirdek/disaaktar.mjs`
+
+DOT, GraphML, CSV, Mermaid ve ham JSON; her biri kendi biçimine göre kaçırılmış. `--gorunum grup`
+dosya grafı yerine toplanmış paket grafını dışa aktarır.
+
 ## Test
 
-`test/ornek-kur.mjs` geçici dizine küçük bir örnek depo yazar — bir döngü, ortak bir yardımcı,
+`araclar/ornek-depo.mjs` geçici dizine küçük bir örnek depo yazar — bir döngü, ortak bir yardımcı,
 çözülemeyen bir import, bir Python paketi ve bir test dosyası. Testler çözümlemeyi, graf
 ölçümlerini, yerleşim değişmezlerini (katman içinde çakışma yok, her düğüm tuvalin içinde, her
 kenarın geçerli yolu var) ve üretilen HTML'in gerçekten kendine yettiğini doğrular.
