@@ -1,0 +1,12 @@
+{
+  "name": "talk-graph",
+  "version": "0.1.0",
+  "description": "Kod tabanindan canli, duzenlenebilir mimari haritasi",
+  "type": "module",
+  "bin": { "tg": "bin/tg.mjs" },
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "engines": { "node": ">=20" },
+  "private": true
+}
