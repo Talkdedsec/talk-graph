@@ -360,15 +360,57 @@ document.addEventListener('keydown', e => {
   if (e.key === '/') { e.preventDefault(); araKutu.focus(); }
   if (e.key === 'f') sigdir();
   if (e.key === 'Escape') { sec(null); }
-  if (e.key === 't') temaDegistir();
+  if (e.key === 't') temaSirala(e.shiftKey ? -1 : 1);
   if (e.key === 'a') akisDegistir();
 });
 
+const TEMALAR = [
+  { kimlik: 'gece', ad: 'Gece' },
+  { kimlik: 'gunduz', ad: 'Gunduz' },
+  { kimlik: 'kagit', ad: 'Kagit' },
+  { kimlik: 'murekkep', ad: 'Murekkep' },
+  { kimlik: 'terminal', ad: 'Terminal' },
+  { kimlik: 'bakir', ad: 'Bakir' },
+  { kimlik: 'buz', ad: 'Buz' },
+  { kimlik: 'mor', ad: 'Mor' },
+  { kimlik: 'orman', ad: 'Orman' },
+  { kimlik: 'kontrast', ad: 'Kontrast' },
+  { kimlik: 'gazete', ad: 'Gazete' }
+];
+
+function temaUygula(kimlik) {
+  document.documentElement.dataset.tema = kimlik;
+  try { localStorage.setItem('tg-tema', kimlik); } catch {}
+  temaMenusunuTazele();
+}
+
+function temaMenusunuTazele() {
+  const etkin = document.documentElement.dataset.tema;
+  for (const oge of document.querySelectorAll('#tema-menu .tema-satir')) {
+    oge.classList.toggle('etkin', oge.dataset.tema === etkin);
+  }
+}
+
+function temaMenusunuKur() {
+  const menu = document.getElementById('tema-menu');
+  menu.innerHTML = TEMALAR.map(t => `<button class="tema-satir" data-tema="${t.kimlik}">
+      <span class="ornek" data-o="${t.kimlik}"></span>${t.ad}</button>`).join('');
+  for (const oge of menu.querySelectorAll('.tema-satir')) {
+    oge.addEventListener('click', () => { temaUygula(oge.dataset.tema); menu.classList.remove('acik'); });
+  }
+  temaMenusunuTazele();
+}
+
 function temaDegistir() {
-  const kok = document.documentElement;
-  const yeni = kok.dataset.tema === 'acik' ? 'koyu' : 'acik';
-  kok.dataset.tema = yeni;
-  try { localStorage.setItem('tg-tema', yeni); } catch {}
+  const menu = document.getElementById('tema-menu');
+  menu.classList.toggle('acik');
+}
+
+function temaSirala(adim) {
+  const su = document.documentElement.dataset.tema;
+  const i = Math.max(0, TEMALAR.findIndex(t => t.kimlik === su));
+  temaUygula(TEMALAR[(i + adim + TEMALAR.length) % TEMALAR.length].kimlik);
+  bildir('tema: ' + TEMALAR[(i + adim + TEMALAR.length) % TEMALAR.length].ad);
 }
 
 function akisDegistir() {
@@ -531,8 +573,14 @@ window.addEventListener('beforeunload', e => {
 
 try {
   const kayitli = localStorage.getItem('tg-tema');
-  if (kayitli) document.documentElement.dataset.tema = kayitli;
+  if (kayitli && TEMALAR.some(t => t.kimlik === kayitli)) document.documentElement.dataset.tema = kayitli;
 } catch {}
+temaMenusunuKur();
+document.addEventListener('click', e => {
+  if (!e.target.closest('#tema-menu') && !e.target.closest('#tema-dugme')) {
+    document.getElementById('tema-menu').classList.remove('acik');
+  }
+});
 
 gruplariCiz();
 kenarlariCiz();

@@ -71,7 +71,7 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
   ].filter(Boolean).join('  ·  ');
 
   return `<!doctype html>
-<html lang="tr" data-tema="koyu">
+<html lang="tr" data-tema="${secenekler.tema || 'gece'}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -101,6 +101,8 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
   <button class="dugme" id="sigdir-dugme" title="f">sığdır</button>
   <button class="dugme" id="tema-dugme" title="t">tema</button>
 </div>
+
+<div class="panel" id="tema-menu"></div>
 
 <div class="panel" id="sonuc"></div>
 <div class="panel" id="detay"></div>
