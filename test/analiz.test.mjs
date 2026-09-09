@@ -91,17 +91,35 @@ test('gecersiz secenek degerleri CLI tarafindan reddedilir', async () => {
       return { kod: e.status, hata: String(e.stderr || '') };
     }
   };
-  const yanlisGorunum = kos('ciz', '.', '--gorunum', 'sacma', '--acma');
+  const yanlisGorunum = kos('ciz', '.', '--gorunum', 'sacma', '--acma', '--dil', 'tr');
   assert.equal(yanlisGorunum.kod, 1);
-  assert.match(yanlisGorunum.hata, /gecerli: grup, dosya, simge/);
+  assert.match(yanlisGorunum.hata, /gecersiz deger: sacma/);
+  assert.match(yanlisGorunum.hata, /grup, group, dosya, file, simge, symbol/);
 
-  const yokYol = kos('ciz', './boyle-bir-klasor-yok', '--acma');
+  const yokYol = kos('ciz', './boyle-bir-klasor-yok', '--acma', '--dil', 'tr');
   assert.equal(yokYol.kod, 1);
   assert.match(yokYol.hata, /yol bulunamadi/);
 
-  const yanlisSayi = kos('ciz', '.', '--enfazla', 'cok', '--acma');
+  const yanlisSayi = kos('ciz', '.', '--enfazla', 'cok', '--acma', '--dil', 'tr');
   assert.equal(yanlisSayi.kod, 1);
   assert.match(yanlisSayi.hata, /bir sayi olmali/);
+
+  const bilinmeyen = kos('draw', '.', '--viev', 'symbol', '--no-open', '--lang', 'en');
+  assert.equal(bilinmeyen.kod, 1);
+  assert.match(bilinmeyen.hata, /unknown option: --viev/);
+});
+
+test('ingilizce ve turkce komutlar ayni sonucu verir', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const kos = (...arg) => execFileSync(process.execPath, ['bin/tg.mjs', ...arg], { encoding: 'utf8' });
+  const tr = kos('kume', kok, '--json', '--dil', 'tr');
+  const en = kos('cluster', kok, '--json', '--lang', 'en');
+  assert.deepEqual(JSON.parse(tr), JSON.parse(en));
+
+  const trCizim = kos('ciz', kok, '--gorunum', 'dosya', '--acma', '--cikti', kok + '/tr.html', '--dil', 'tr');
+  const enCizim = kos('draw', kok, '--view', 'file', '--no-open', '--out', kok + '/en.html', '--lang', 'en');
+  assert.match(trCizim, /cizim: \d+ dugum/);
+  assert.match(enCizim, /drawn: \d+ nodes/);
 });
 
 test('mermaid ciktisi flowchart olarak baslar', () => {

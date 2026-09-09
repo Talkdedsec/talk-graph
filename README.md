@@ -7,12 +7,17 @@
 Turns a codebase into a navigable, single-file architecture map. No hand-written diagram
 specs: the input is the repository itself.
 
+**[Open the live demo →](https://talkdedsec.github.io/talk-graph/)** — this repository, mapped by itself.
+
 ```bash
-node bin/tg.mjs C:\path\to\project
+npx talk-graph ./my-project
 ```
 
-The generated `cikti/project.html` is one self-contained file — no runtime dependencies,
+The generated `cikti/my-project.html` is one self-contained file — no runtime dependencies,
 no CDN, no build step. Share it as-is.
+
+Commands and flags work in **English and Turkish**: `tg draw` and `tg ciz` are the same command,
+`--view symbol` and `--gorunum simge` the same flag. Output follows your locale, or `--lang`.
 
 ![Dependency map, dark theme](docs/gorsel/harita-koyu.png)
 
@@ -52,16 +57,17 @@ reader would name by hand: `finding.Finding`, `cli.Execute`, `fetch.Client`, `sc
 Node 20 or newer. Nothing else.
 
 ```bash
-git clone git@github.com:Talkdedsec/talk-graph.git
-cd talk-graph
-node --test
+npx talk-graph ./my-project          # no install
+npm install -g talk-graph && tg .    # or install the tg command
 ```
 
-Optionally link the CLI as `tg`:
+From source:
 
 ```bash
-npm link
-tg ./my-project
+git clone https://github.com/Talkdedsec/talk-graph.git
+cd talk-graph
+node --test
+node bin/tg.mjs ./my-project
 ```
 
 ## Commands
@@ -87,6 +93,27 @@ tg yol ./api route.ts db.ts # the exact import chain that connects them, with li
 tg denetle ./api            # cycles, over-connected nodes, files that change and are depended on
 tg kume ./api               # modules the code actually has, versus the folders it claims
 ```
+
+### English ↔ Turkish
+
+| English | Türkçe | | English | Türkçe |
+|---|---|---|---|---|
+| `draw` | `ciz` | | `--view` | `--gorunum` |
+| `scan` | `tara` | | `--out` | `--cikti` |
+| `explain` | `anlat` | | `--depth` | `--derinlik` |
+| `path` | `yol` | | `--grouping` | `--gruplama` |
+| `audit` | `denetle` | | `--focus` | `--odak` |
+| `cluster` | `kume` | | `--radius` | `--cevre` |
+| `export` | `disaaktar` | | `--max` | `--enfazla` |
+| `diff` | `fark` | | `--direction` | `--yon` |
+| `watch` | `izle` | | `--theme` | `--tema` |
+| `group` / `file` / `symbol` | `grup` / `dosya` / `simge` | | `--external` | `--dis` |
+| `folder` / `community` | `klasor` / `topluluk` | | `--no-tests` | `--testyok` |
+| `right` / `down` | `sag` / `asagi` | | `--no-history` | `--gecmisyok` |
+| | | | `--positions` | `--konum` |
+| | | | `--all` | `--hepsi` |
+| | | | `--no-open` | `--acma` |
+| | | | `--lang` | `--dil` |
 
 ## Options
 
@@ -174,6 +201,7 @@ crossings low: on a 76-file Go repository the package map lands at 61 crossings 
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)
+- [Commercial licence](COMMERCIAL.md) — when you need one, and how to get it
 
 ## Licence
 

@@ -1,0 +1,52 @@
+name: demo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  uret:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: haritalari uret
+        run: |
+          node bin/tg.mjs draw . --view symbol --max 200 --no-open --out site/index.html --lang en
+          node bin/tg.mjs draw . --view file --no-open --out site/dosya.html --lang en
+          node bin/tg.mjs ciz . --gorunum simge --enfazla 200 --acma --cikti site/tr.html --dil tr
+      - name: tek dosya mi
+        run: |
+          for f in site/index.html site/dosya.html site/tr.html; do
+            test -f "$f"
+            if grep -qE '<(script[^>]+src=|link[^>]+href=)' "$f"; then
+              echo "$f dis kaynak yukluyor"; exit 1
+            fi
+          done
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  yayinla:
+    needs: uret
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.dagit.outputs.page_url }}
+    steps:
+      - id: dagit
+        uses: actions/deploy-pages@v4

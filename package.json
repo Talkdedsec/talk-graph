@@ -1,19 +1,19 @@
 {
   "name": "talk-graph",
-  "version": "0.6.0",
-  "description": "Turns a codebase into a navigable, single-file architecture map",
+  "version": "0.7.0",
+  "description": "Turns a codebase into a navigable, single-file architecture map. Kod tabanini gezilebilir tek dosyalik mimari haritaya cevirir.",
   "type": "module",
   "bin": {
     "tg": "bin/tg.mjs"
   },
   "scripts": {
     "test": "node --test",
-    "ciz": "node bin/tg.mjs"
+    "ciz": "node bin/tg.mjs",
+    "draw": "node bin/tg.mjs"
   },
   "engines": {
     "node": ">=20"
   },
-  "private": true,
   "license": "PolyForm-Noncommercial-1.0.0",
   "files": [
     "bin",
@@ -21,6 +21,27 @@
     "kanvas",
     "README.md",
     "README.tr.md",
-    "LICENSE"
-  ]
+    "LICENSE",
+    "COMMERCIAL.md"
+  ],
+  "keywords": [
+    "architecture",
+    "dependency-graph",
+    "call-graph",
+    "code-visualization",
+    "static-analysis",
+    "codebase-map",
+    "svg",
+    "cli",
+    "zero-dependency"
+  ],
+  "homepage": "https://github.com/Talkdedsec/talk-graph",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Talkdedsec/talk-graph.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Talkdedsec/talk-graph/issues"
+  },
+  "author": "Talkdedsec"
 }
