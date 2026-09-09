@@ -1,5 +1,7 @@
 # talk-graph
 
+[![ci](https://github.com/Talkdedsec/talk-graph/actions/workflows/ci.yml/badge.svg)](https://github.com/Talkdedsec/talk-graph/actions/workflows/ci.yml)
+
 [English](README.md) · **Türkçe**
 
 Kod tabanını gezilebilir, tek dosyalık bir mimari haritaya çevirir. Elle diyagram yazmak yok:
