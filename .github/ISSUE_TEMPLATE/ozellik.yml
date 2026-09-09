@@ -1,0 +1,23 @@
+name: Ozellik / Feature
+description: Yeni bir yetenek oner / Propose a capability
+labels: [ozellik]
+body:
+  - type: textarea
+    id: sorun
+    attributes:
+      label: Hangi sorunu cozuyor / Which problem does it solve
+    validations:
+      required: true
+  - type: textarea
+    id: oneri
+    attributes:
+      label: Onerilen davranis / Proposed behaviour
+    validations:
+      required: true
+  - type: checkboxes
+    id: kurallar
+    attributes:
+      label: Kurallar / Ground rules
+      options:
+        - label: Yeni bagimlilik gerektirmiyor / needs no new dependency
+          required: true

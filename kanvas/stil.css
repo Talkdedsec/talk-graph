@@ -61,6 +61,8 @@ body {
 .dugum text.baslik { fill: var(--metin); font-weight: 600; font-size: 12.5px; }
 .dugum text.alt { fill: var(--metin-3); font-size: 10.5px; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
 .dugum rect.serit { stroke: none; }
+.dugum rect.isi { stroke: none; pointer-events: none; transition: opacity var(--gecis); }
+body.isi-acik .dugum rect.isi { opacity: .5; }
 .dugum .rozet { fill: var(--metin-3); font-size: 9.5px; font-family: ui-monospace, monospace; }
 
 .kenar {
