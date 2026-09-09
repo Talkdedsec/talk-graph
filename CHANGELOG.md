@@ -2,6 +2,23 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning: [SemVer](https://semver.org/lang/tr/).
 
+## [0.7.0] — 2026-09-09
+
+### Added · Eklenen
+
+- **The whole tool speaks English and Turkish.** Every command has both names (`draw`/`ciz`,
+  `explain`/`anlat`, `audit`/`denetle`), every flag has both (`--view`/`--gorunum`,
+  `--max`/`--enfazla`), and both are equal — neither is an alias of the other. Console output and
+  the generated map follow your locale, or `--lang` / `--dil`.
+  *Butun arac iki dilli: her komutun ve bayragin iki adi var, ciktinin dili yerelden ya da --dil ile.*
+- **Published to npm**: `npx talk-graph ./project` with no install.
+- **Live demo on GitHub Pages**, rebuilt from this repository on every push to main.
+  *Her push'ta yeniden uretilen canli demo.*
+- `COMMERCIAL.md` — what needs a commercial licence and how to ask for one.
+- `CODE_OF_CONDUCT.md`.
+
+[0.7.0]: https://github.com/Talkdedsec/talk-graph/releases/tag/v0.7.0
+
 ## [0.6.0] — 2026-09-09
 
 ### Changed · Degisen

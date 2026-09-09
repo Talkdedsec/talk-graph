@@ -1,7 +1,7 @@
 # talk-graph — durum
 
 Başlangıç: 9 Eylül 2026. Sıfırdan yazıldı, dış bağımlılık yok, kod tamamen bize ait.
-Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.6.0. Lisans: PolyForm Noncommercial 1.0.0. CI: ubuntu+windows × node 20/22/24, yeşil.
+Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.7.0. Lisans: PolyForm Noncommercial 1.0.0. CI: ubuntu+windows × node 20/22/24, yeşil.
 Belgeler iki dilli: README.md (EN) + README.tr.md, docs/ARCHITECTURE.md + docs/MIMARI.md.
 
 ## Neden
@@ -58,7 +58,9 @@ Geçen: sızan kişisel yol yok, gizli değer yok, sıfır bağımlılık, 39 te
 yeşil, hatalı girdi düzgün hata veriyor, çıktı ağa çıkmıyor (CI doğruluyor).
 Kapatılan: lisans (PolyForm Noncommercial), ekran görüntülerindeki huntx sızıntısı (hepsi
 talk-graph'ın kendisinden yeniden üretildi), bayat ölçüm tabloları.
-Açık kalan tek şey depo görünürlüğü — public'e çevirme kararı verilmedi.
+Kapatılan (2. tur): CLI ve arayüz iki dilli, npm paketi hazır (50.7 KB, 17 dosya),
+Pages demo workflow'u yazıldı, COMMERCIAL.md ve CODE_OF_CONDUCT.md eklendi.
+Açık kalan iki dış adım: depoyu public'e çevirmek ve `npm publish` (npm login kullanıcıda).
 
 ## Sıradaki
 

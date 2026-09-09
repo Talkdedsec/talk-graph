@@ -113,7 +113,7 @@ function enUzunZincir(graf) {
   return enIyi;
 }
 
-export function denetle(graf) {
+export function denetle(graf, m = null) {
   const ic = graf.dugumler.filter(d => !d.dis);
   const dereceler = ic.map(d => (d.gelenSayisi || 0) + (d.gidenSayisi || 0)).sort((a, b) => a - b);
   const ortanca = dereceler.length ? dereceler[dereceler.length >> 1] : 0;
@@ -147,13 +147,19 @@ export function denetle(graf) {
     .sort((a, b) => b.degisiklik - a.degisiklik).slice(0, 8)
     .map(d => ({ yol: d.yol, degisiklik: d.degisiklik, gelen: d.gelenSayisi }));
 
-  const uyarilar = [];
-  if (donguKumeleri.size) uyarilar.push(`${donguKumeleri.size} dairesel bagimlilik kumesi`);
-  if (tanri.length) uyarilar.push(`${tanri.length} dugum ortanca derecenin 3 katindan fazla bagli`);
   const yalniz = ic.filter(d => !d.gelenSayisi && !d.gidenSayisi);
-  if (yalniz.length) uyarilar.push(`${yalniz.length} dosya hicbir seye bagli degil`);
   const riskli = cokDegisen.filter(d => d.gelen >= 5);
-  if (riskli.length) uyarilar.push(`${riskli.length} dosya hem cok degisiyor hem cok cagriliyor`);
+  const yazi = m || {
+    u_dongu: n => `${n} dairesel bagimlilik kumesi`,
+    u_tanri: n => `${n} dugum ortanca derecenin 3 katindan fazla bagli`,
+    u_yalniz: n => `${n} dosya hicbir seye bagli degil`,
+    u_riskli: n => `${n} dosya hem cok degisiyor hem cok cagriliyor`
+  };
+  const uyarilar = [];
+  if (donguKumeleri.size) uyarilar.push(yazi.u_dongu(donguKumeleri.size));
+  if (tanri.length) uyarilar.push(yazi.u_tanri(tanri.length));
+  if (yalniz.length) uyarilar.push(yazi.u_yalniz(yalniz.length));
+  if (riskli.length) uyarilar.push(yazi.u_riskli(riskli.length));
 
   return {
     olcumler: graf.olcumler,

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { metinler } from './dil.mjs';
 
 const buradaki = dirname(fileURLToPath(import.meta.url));
 const kanvas = join(buradaki, '..', 'kanvas');
@@ -25,6 +26,8 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
   const motor = readFileSync(join(kanvas, 'motor.js'), 'utf8');
   const o = graf.olcumler || {};
   const baslik = secenekler.baslik || graf.ad || 'harita';
+  const dil = secenekler.dil === 'tr' ? 'tr' : 'en';
+  const a = metinler(dil).arayuz;
 
   const veri = {
     yerlesim: {
@@ -60,20 +63,22 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
       tarandi: graf.tarandi,
       kesisme: yerlesim.kesisme,
       katman: yerlesim.katmanSayisi,
-      gecmisEnFazla: Math.max(0, ...yerlesim.dugumler.map(d => d.degisiklik || 0))
+      gecmisEnFazla: Math.max(0, ...yerlesim.dugumler.map(d => d.degisiklik || 0)),
+      dil,
+      metin: a
     }
   };
 
   const olcumSatiri = [
-    `<b>${o.icDugum ?? veri.yerlesim.dugumler.length}</b> düğüm`,
-    `<b>${o.kenar ?? veri.yerlesim.kenarlar.length}</b> bağ`,
-    o.dongu ? `<b>${o.dongu}</b> döngü` : null,
-    o.disPaket ? `<b>${o.disPaket}</b> dış paket` : null,
-    o.yalniz ? `<b>${o.yalniz}</b> yalnız` : null
+    `<b>${o.icDugum ?? veri.yerlesim.dugumler.length}</b> ${a.dugum}`,
+    `<b>${o.kenar ?? veri.yerlesim.kenarlar.length}</b> ${a.bag}`,
+    o.dongu ? `<b>${o.dongu}</b> ${a.dongu}` : null,
+    o.disPaket ? `<b>${o.disPaket}</b> ${a.disPaket}` : null,
+    o.yalniz ? `<b>${o.yalniz}</b> ${a.yalniz}` : null
   ].filter(Boolean).join('  ·  ');
 
   return `<!doctype html>
-<html lang="tr" data-tema="${secenekler.tema || 'gece'}">
+<html lang="${dil}" data-tema="${secenekler.tema || 'gece'}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -96,12 +101,12 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
 </svg>
 
 <div class="panel" id="ust">
-  <div class="ad">${kacir(baslik)} <span>· ${kacir({ grup: 'paket görünümü', dosya: 'dosya görünümü', simge: 'simge görünümü' }[veri.meta.gorunum] || 'harita')}</span></div>
+  <div class="ad">${kacir(baslik)} <span>· ${kacir({ grup: a.g_grup, dosya: a.g_dosya, simge: a.g_simge }[veri.meta.gorunum] || '')}</span></div>
   <div class="olcum">${olcumSatiri}</div>
   <div class="bosluk"></div>
-  <input id="ara" type="search" placeholder="ara  /  →  dosya, klasör, simge" autocomplete="off">
-  <button class="dugme" id="sigdir-dugme" title="f">sığdır</button>
-  <button class="dugme" id="tema-dugme" title="t">tema</button>
+  <input id="ara" type="search" placeholder="${kacir(a.ara)}" autocomplete="off">
+  <button class="dugme" id="sigdir-dugme" title="f">${kacir(a.sigdir)}</button>
+  <button class="dugme" id="tema-dugme" title="t">${kacir(a.tema)}</button>
 </div>
 
 <div class="panel" id="tema-menu"></div>
@@ -111,41 +116,40 @@ export function htmlUret(yerlesim, graf, secenekler = {}) {
 
 <div class="panel" id="yan">
   <div class="yan-baslik">
-    <span>gruplar</span>
-    <button class="kucuk-dugme" id="tumu-dugme">tümü</button>
+    <span>${kacir(a.gruplar)}</span>
+    <button class="kucuk-dugme" id="tumu-dugme">${kacir(a.tumu)}</button>
   </div>
   <div id="grup-listesi"></div>
-  <div class="yan-baslik ayirac"><span>bağ türü</span></div>
+  <div class="yan-baslik ayirac"><span>${kacir(a.bagTuru)}</span></div>
   <div id="kenar-listesi"></div>
 </div>
 
-<button class="panel yuvarlak" id="yan-dugme" title="gruplar (g)">☰</button>
+<button class="panel yuvarlak" id="yan-dugme" title="${kacir(a.gruplar)} (g)">☰</button>
 
 <div class="panel" id="yardim">
-  <h3>kısayollar</h3>
+  <h3>${kacir(a.kisayollar)}</h3>
   <dl>
-    <dt>/</dt><dd>ara</dd>
-    <dt>f</dt><dd>ekrana sığdır</dd>
-    <dt>g</dt><dd>grup panelini aç/kapat</dd>
-    <dt>t · shift+t</dt><dd>sonraki · önceki tema</dd>
-    <dt>a</dt><dd>akış animasyonu</dd>
-    <dt>c</dt><dd>döngüleri izole et</dd>
-    <dt>1 · 2 · 3</dt><dd>yakınlaştır · uzaklaştır · sığdır</dd>
-    <dt>esc</dt><dd>seçimi bırak</dd>
-    <dt>?</dt><dd>bu pencere</dd>
+    <dt>/</dt><dd>${kacir(a.k_ara)}</dd>
+    <dt>f</dt><dd>${kacir(a.k_sigdir)}</dd>
+    <dt>g</dt><dd>${kacir(a.k_grup)}</dd>
+    <dt>t · shift+t</dt><dd>${kacir(a.k_tema)}</dd>
+    <dt>a</dt><dd>${kacir(a.k_akis)}</dd>
+    <dt>c</dt><dd>${kacir(a.k_dongu)}</dd>
+    <dt>1 · 2 · 3</dt><dd>${kacir(a.k_yakin)}</dd>
+    <dt>esc</dt><dd>${kacir(a.k_sec)}</dd>
+    <dt>?</dt><dd>${kacir(a.k_yardim)}</dd>
   </dl>
-  <p class="ipucu">düğümü sürüklersen konumu değişir, <b>kaydet</b> ile dışa aktarılır ve
-  <code>--konum</code> ile geri yüklenir.</p>
+  <p class="ipucu">${a.ipucu}</p>
 </div>
 
 <div class="panel" id="alt">
-  <button class="dugme" id="akis-dugme" title="a">akış</button>
-  <button class="dugme" id="dongu-dugme">döngüler</button>
-  <button class="dugme" id="isi-dugme">değişim</button>
-  <button class="dugme" id="dis-dugme">dış paketler</button>
+  <button class="dugme" id="akis-dugme" title="a">${kacir(a.akis)}</button>
+  <button class="dugme" id="dongu-dugme">${kacir(a.donguler)}</button>
+  <button class="dugme" id="isi-dugme">${kacir(a.degisim)}</button>
+  <button class="dugme" id="dis-dugme">${kacir(a.disPaketler)}</button>
   <button class="dugme" id="png-dugme">png</button>
   <button class="dugme" id="svg-dugme">svg</button>
-  <button class="dugme" id="kaydet-dugme">kaydet</button>
+  <button class="dugme" id="kaydet-dugme">${kacir(a.kaydet)}</button>
   <button class="dugme" id="yardim-dugme" title="?">?</button>
   <span class="gosterge" id="gosterge"></span>
 </div>

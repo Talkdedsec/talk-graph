@@ -4,6 +4,8 @@ const dugumler = veri.yerlesim.dugumler;
 const kenarlar = veri.yerlesim.kenarlar;
 const gruplar = veri.yerlesim.gruplar || [];
 const dugumHarita = new Map(dugumler.map(d => [d.kimlik, d]));
+const yazi = veri.meta.metin || {};
+const KENAR_ETIKETI = yazi.kenar || {};
 
 function grupTonu(ad) {
   let h = 0;
@@ -149,10 +151,10 @@ function isiRengi(degisiklik) {
 
 function isiDegistir() {
   const dugme = document.getElementById('isi-dugme');
-  if (!veri.meta.gecmisEnFazla) { bildir('git gecmisi okunamadi'); return; }
+  if (!veri.meta.gecmisEnFazla) { bildir(yazi.b_gecmisYok); return; }
   const acik = dugme.classList.toggle('acik');
   document.body.classList.toggle('isi-acik', acik);
-  bildir(acik ? 'renk: son 180 gunde degisiklik sayisi' : 'isi katmani kapandi');
+  bildir(acik ? yazi.b_isiAcik : yazi.b_isiKapali);
 }
 
 const DURUM_ANAHTARI = 'tg-durum:' + veri.meta.ad + ':' + veri.meta.gorunum;
@@ -255,7 +257,7 @@ function dugumTutma(olay, dugum, oge) {
     window.removeEventListener('pointermove', hareket);
     window.removeEventListener('pointerup', birak);
     surukleniyorDugum = null;
-    if (hareketEtti) { degistiIsareti = true; bildir('konum güncellendi — kaydet ile dışa aktar'); }
+    if (hareketEtti) { degistiIsareti = true; bildir(yazi.b_konum); }
     setTimeout(() => { surukleniyorDugum = null; }, 0);
   };
   surukleniyorDugum = dugum.kimlik;
@@ -325,23 +327,23 @@ function detayGoster(d, bag) {
   const listeYap = (kenarListesi, alan) => kenarListesi.slice(0, 14).map(k => {
     const o = dugumHarita.get(k[alan]);
     return `<li data-git="${k[alan]}">${o ? o.ad : k[alan]}<span class="tur"> ${k.satir ? ':' + k.satir : ''}</span></li>`;
-  }).join('') || '<li class="tur">yok</li>';
+  }).join('') || `<li class="tur">${yazi.yok}</li>`;
 
   p.innerHTML = `
     <h2>${d.ad || d.kimlik}</h2>
     <div class="yol">${d.tur ? d.tur + ' · ' : ''}${d.yol || ''}</div>
     <div class="kutucuk">
-      <div><b>${bag.gelen.length}</b><span>çağıran</span></div>
-      <div><b>${bag.giden.length}</b><span>bağımlılık</span></div>
-      <div><b>${d.satirSayisi || d.uyeSayisi || 0}</b><span>${d.uyeSayisi ? 'dosya' : 'satır'}</span></div>
+      <div><b>${bag.gelen.length}</b><span>${yazi.cagiran}</span></div>
+      <div><b>${bag.giden.length}</b><span>${yazi.bagimlilik}</span></div>
+      <div><b>${d.satirSayisi || d.uyeSayisi || 0}</b><span>${d.uyeSayisi ? yazi.dosya : yazi.satir}</span></div>
     </div>
-    ${d.degisiklik ? `<div class="kutucuk"><div><b>${d.degisiklik}</b><span>değişiklik / 180 gün</span></div><div><b>${d.yazarSayisi || '-'}</b><span>yazar</span></div><div><b>${d.sonDokunma ? Math.round((Date.now() - d.sonDokunma) / 86400000) : '-'}</b><span>gün önce</span></div></div>` : ''}
-    ${simgeler.length ? `<h3>Simgeler</h3><ul>${simgeler.map(s => `<li>${s.ad}<span class="tur"> ${s.tur}</span></li>`).join('')}</ul>` : ''}
-    <h3>Bunu kullananlar</h3><ul>${listeYap(bag.gelen, 'kaynak')}</ul>
-    <h3>Bunun kullandıkları</h3><ul>${listeYap(bag.giden, 'hedef')}</ul>
+    ${d.degisiklik ? `<div class="kutucuk"><div><b>${d.degisiklik}</b><span>${yazi.degisiklikPencere}</span></div><div><b>${d.yazarSayisi || '-'}</b><span>${yazi.yazar}</span></div><div><b>${d.sonDokunma ? Math.round((Date.now() - d.sonDokunma) / 86400000) : '-'}</b><span>${yazi.gunOnce}</span></div></div>` : ''}
+    ${simgeler.length ? `<h3>${yazi.simgeler}</h3><ul>${simgeler.map(s => `<li>${s.ad}<span class="tur"> ${s.tur}</span></li>`).join('')}</ul>` : ''}
+    <h3>${yazi.kullananlar}</h3><ul>${listeYap(bag.gelen, 'kaynak')}</ul>
+    <h3>${yazi.kullandiklari}</h3><ul>${listeYap(bag.giden, 'hedef')}</ul>
     <div class="eylem">
-      ${d.dis ? '' : `<button class="dugme" id="editorde">editörde aç</button>`}
-      <button class="dugme" id="odakla">odakla</button>
+      ${d.dis ? '' : `<button class="dugme" id="editorde">${yazi.editorde}</button>`}
+      <button class="dugme" id="odakla">${yazi.odakla}</button>
     </div>`;
   p.style.display = 'block';
   p.querySelectorAll('li[data-git]').forEach(li => {
@@ -379,7 +381,7 @@ araKutu.addEventListener('input', () => {
   etkinSonuc = 0;
   sonucKutu.innerHTML = sonuclar.map((x, i) =>
     `<div class="satir ${i === 0 ? 'etkin' : ''}" data-kimlik="${x.d.kimlik}">${x.d.ad}<div class="y">${x.d.yol}</div></div>`
-  ).join('') || '<div class="satir y">eşleşme yok</div>';
+  ).join('') || `<div class="satir y">${yazi.eslesmeYok}</div>`;
   sonucKutu.style.display = 'block';
   sonucKutu.querySelectorAll('.satir[data-kimlik]').forEach(s => {
     s.addEventListener('click', () => { sec(s.dataset.kimlik); dugumeGit(s.dataset.kimlik, true); sonucKutu.style.display = 'none'; });
@@ -467,7 +469,7 @@ function temaSirala(adim) {
   const su = document.documentElement.dataset.tema;
   const i = Math.max(0, TEMALAR.findIndex(t => t.kimlik === su));
   temaUygula(TEMALAR[(i + adim + TEMALAR.length) % TEMALAR.length].kimlik);
-  bildir('tema: ' + TEMALAR[(i + adim + TEMALAR.length) % TEMALAR.length].ad);
+  bildir(yazi.b_tema(TEMALAR[(i + adim + TEMALAR.length) % TEMALAR.length].ad));
 }
 
 function akisDegistir() {
@@ -493,7 +495,7 @@ function dongulariVurgula() {
   const dugme = document.getElementById('dongu-dugme');
   const acik = dugme.classList.toggle('acik');
   const donguKenarlar = kenarlar.filter(k => k.dongude);
-  if (!donguKenarlar.length) { bildir('döngü yok'); dugme.classList.remove('acik'); return; }
+  if (!donguKenarlar.length) { bildir(yazi.b_donguYok); dugme.classList.remove('acik'); return; }
   if (!acik) { solgunlukTemizle(); return; }
   const dahil = new Set(donguKenarlar.flatMap(k => [k.kaynak, k.hedef]));
   for (const [k, oge] of dugumOge) oge.classList.toggle('solgun', !dahil.has(k));
@@ -501,7 +503,7 @@ function dongulariVurgula() {
     oge.yol.classList.toggle('solgun', !k.dongude);
     oge.yol.classList.toggle('vurgulu', !!k.dongude);
   }
-  bildir(donguKenarlar.length + ' döngü kenarı');
+  bildir(yazi.b_donguKenar(donguKenarlar.length));
 }
 
 const kucukHarita = document.getElementById('kucukharita');
@@ -575,7 +577,7 @@ function indir(ad, icerik, tur) {
 
 function svgDisaAktar() {
   indir(veri.meta.ad + '.svg', svgMetni(), 'image/svg+xml');
-  bildir('SVG indirildi');
+  bildir(yazi.b_svg);
 }
 
 function pngDisaAktar() {
@@ -593,10 +595,10 @@ function pngDisaAktar() {
       bag.href = URL.createObjectURL(b);
       bag.download = veri.meta.ad + '.png';
       bag.click();
-      bildir('PNG indirildi');
+      bildir(yazi.b_png);
     }, 'image/png');
   };
-  gorsel.onerror = () => bildir('PNG üretilemedi, SVG kullanın');
+  gorsel.onerror = () => bildir(yazi.b_pngHata);
   gorsel.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMetni());
 }
 
@@ -609,7 +611,7 @@ function konumlariKaydet() {
   };
   indir(veri.meta.ad + '.konum.json', JSON.stringify(cikti, null, 2), 'application/json');
   degistiIsareti = false;
-  bildir('konumlar kaydedildi');
+  bildir(yazi.b_kaydedildi);
 }
 
 document.getElementById('sigdir-dugme').addEventListener('click', () => sigdir());
@@ -648,20 +650,11 @@ if (kayitliDurum) {
   gorunum = kayitliDurum.gorunum;
   gorunumUygula();
   if (kayitliDurum.secili && dugumHarita.has(kayitliDurum.secili)) sec(kayitliDurum.secili);
-  if (kayitliDurum.dugumSayisi !== dugumler.length) bildir('harita tazelendi, gorunum korundu');
+  if (kayitliDurum.dugumSayisi !== dugumler.length) bildir(yazi.b_tazelendi);
 } else {
   sigdir();
 }
 window.addEventListener('resize', () => kucukHaritaGuncelle());
-
-const KENAR_ETIKETI = {
-  'ice-aktarim': 'içe aktarım',
-  'dis-bagimlilik': 'dış bağımlılık',
-  cagri: 'çağrı',
-  referans: 'referans',
-  metot: 'metot',
-  icerir: 'içerir'
-};
 
 const kapaliGruplar = new Set();
 const kapaliKenarTurleri = new Set();
@@ -669,7 +662,7 @@ const kapaliKenarTurleri = new Set();
 function grupSayilari() {
   const sayim = new Map();
   for (const d of dugumler) {
-    const ad = d.grup || '(gruplanmamış)';
+    const ad = d.grup || yazi.gruplanmamis;
     sayim.set(ad, (sayim.get(ad) || 0) + 1);
   }
   return [...sayim.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
@@ -684,7 +677,7 @@ function kenarTuruSayilari() {
 function suzgeciUygula() {
   let gorunenDugum = 0, gorunenKenar = 0;
   for (const d of dugumler) {
-    const gizli = kapaliGruplar.has(d.grup || '(gruplanmamış)') || (!disGoster && d.dis);
+    const gizli = kapaliGruplar.has(d.grup || yazi.gruplanmamis) || (!disGoster && d.dis);
     const oge = dugumOge.get(d.kimlik);
     if (oge) oge.style.display = gizli ? 'none' : '';
     if (!gizli) gorunenDugum++;
@@ -693,8 +686,8 @@ function suzgeciUygula() {
     const a = dugumHarita.get(k.kaynak), b = dugumHarita.get(k.hedef);
     const gizli = kapaliKenarTurleri.has(k.tur) ||
       !a || !b ||
-      kapaliGruplar.has(a.grup || '(gruplanmamış)') ||
-      kapaliGruplar.has(b.grup || '(gruplanmamış)') ||
+      kapaliGruplar.has(a.grup || yazi.gruplanmamis) ||
+      kapaliGruplar.has(b.grup || yazi.gruplanmamis) ||
       (!disGoster && (a.dis || b.dis));
     oge.grup.style.display = gizli ? 'none' : '';
     if (!gizli) gorunenKenar++;
@@ -703,8 +696,8 @@ function suzgeciUygula() {
   if (g) {
     const tumu = kapaliGruplar.size === 0 && kapaliKenarTurleri.size === 0;
     g.textContent = tumu
-      ? `${dugumler.length} düğüm · ${kenarlar.length} bağ`
-      : `${gorunenDugum}/${dugumler.length} düğüm · ${gorunenKenar}/${kenarlar.length} bağ`;
+      ? `${dugumler.length} ${yazi.dugum} · ${kenarlar.length} ${yazi.bag}`
+      : `${gorunenDugum}/${dugumler.length} ${yazi.dugum} · ${gorunenKenar}/${kenarlar.length} ${yazi.bag}`;
   }
   for (const oge of document.querySelectorAll('#grup-listesi .suzgec')) {
     oge.classList.toggle('kapali', kapaliGruplar.has(oge.dataset.grup));

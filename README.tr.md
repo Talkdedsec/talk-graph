@@ -7,12 +7,18 @@
 Kod tabanını gezilebilir, tek dosyalık bir mimari haritaya çevirir. Elle diyagram yazmak yok:
 girdi deponun kendisi.
 
+**[Canlı demoyu aç →](https://talkdedsec.github.io/talk-graph/)** — bu deponun kendi haritası.
+
 ```bash
-node bin/tg.mjs C:\yol\projem
+npx talk-graph ./projem
 ```
 
 Üretilen `cikti/projem.html` tek başına çalışan tek dosyadır — dış bağımlılık yok, CDN yok,
 derleme adımı yok. Olduğu gibi paylaşılır.
+
+Komutlar ve bayraklar **Türkçe ve İngilizce** çalışır: `tg ciz` ile `tg draw` aynı komut,
+`--gorunum simge` ile `--view symbol` aynı bayrak. Çıktı diline sistem yerelin karar verir,
+`--dil` ile değiştirilir.
 
 ![Bağımlılık haritası, koyu tema](docs/gorsel/harita-koyu.png)
 
@@ -52,16 +58,17 @@ isimler: `finding.Finding`, `cli.Execute`, `fetch.Client`, `scope.Scope`.
 Node 20 ve üstü. Başka bir şey gerekmez.
 
 ```bash
-git clone git@github.com:Talkdedsec/talk-graph.git
-cd talk-graph
-node --test
+npx talk-graph ./projem              # kurulumsuz
+npm install -g talk-graph && tg .    # ya da tg komutunu kur
 ```
 
-CLI'yi `tg` olarak bağlamak istersen:
+Kaynaktan:
 
 ```bash
-npm link
-tg ./projem
+git clone https://github.com/Talkdedsec/talk-graph.git
+cd talk-graph
+node --test
+node bin/tg.mjs ./projem
 ```
 
 ## Komutlar
@@ -87,6 +94,27 @@ tg yol ./api route.ts db.ts    # ikisini bağlayan import zinciri, satır numara
 tg denetle ./api               # döngüler, aşırı bağlı düğümler, hem değişen hem bağımlı dosyalar
 tg kume ./api                  # kodun gerçekte sahip olduğu modüller, iddia ettiği klasörlere karşı
 ```
+
+### İngilizce ↔ Türkçe
+
+| English | Türkçe | | English | Türkçe |
+|---|---|---|---|---|
+| `draw` | `ciz` | | `--view` | `--gorunum` |
+| `scan` | `tara` | | `--out` | `--cikti` |
+| `explain` | `anlat` | | `--depth` | `--derinlik` |
+| `path` | `yol` | | `--grouping` | `--gruplama` |
+| `audit` | `denetle` | | `--focus` | `--odak` |
+| `cluster` | `kume` | | `--radius` | `--cevre` |
+| `export` | `disaaktar` | | `--max` | `--enfazla` |
+| `diff` | `fark` | | `--direction` | `--yon` |
+| `watch` | `izle` | | `--theme` | `--tema` |
+| `group` / `file` / `symbol` | `grup` / `dosya` / `simge` | | `--external` | `--dis` |
+| `folder` / `community` | `klasor` / `topluluk` | | `--no-tests` | `--testyok` |
+| `right` / `down` | `sag` / `asagi` | | `--no-history` | `--gecmisyok` |
+| | | | `--positions` | `--konum` |
+| | | | `--all` | `--hepsi` |
+| | | | `--no-open` | `--acma` |
+| | | | `--lang` | `--dil` |
 
 ## Seçenekler
 
@@ -174,6 +202,7 @@ Uzun kenarlar sanal düğüm zincirine girmez, eğri olarak çizilir; kesişmeyi
 - [Değişim defteri](CHANGELOG.md)
 - [Katkı](CONTRIBUTING.md)
 - [Güvenlik](SECURITY.md)
+- [Ticari lisans](COMMERCIAL.md) — ne zaman gerekir, nasıl alınır
 
 ## Lisans
 
