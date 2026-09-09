@@ -1,7 +1,7 @@
 # talk-graph — durum
 
 Başlangıç: 9 Eylül 2026. Sıfırdan yazıldı, dış bağımlılık yok, kod tamamen bize ait.
-Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.5.0. CI: ubuntu+windows × node 20/22/24, yeşil.
+Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.6.0. Lisans: PolyForm Noncommercial 1.0.0. CI: ubuntu+windows × node 20/22/24, yeşil.
 Belgeler iki dilli: README.md (EN) + README.tr.md, docs/ARCHITECTURE.md + docs/MIMARI.md.
 
 ## Neden
@@ -51,6 +51,14 @@ Arayüz kıyası (v0.5.0 sonrası): graphify'ın sağ panelinde topluluk onay li
 vardı, bizde yoktu — alındı ve genişletildi (grup + bağ türü filtresi, canlı sayaç, gruba göre
 renk). Bizde olup onda olmayanlar: tema seti, mini harita, git ısı katmanı, düğüm sürükleme,
 editöre sıçrama, yakınlığa göre ayrıntı, kenar ipucu, kısayol penceresi, PNG/SVG dışa aktarma.
+
+## Yayına hazırlık denetimi (9 Eyl)
+
+Geçen: sızan kişisel yol yok, gizli değer yok, sıfır bağımlılık, 39 test, CI 6 iş matrisinde
+yeşil, hatalı girdi düzgün hata veriyor, çıktı ağa çıkmıyor (CI doğruluyor).
+Kapatılan: lisans (PolyForm Noncommercial), ekran görüntülerindeki huntx sızıntısı (hepsi
+talk-graph'ın kendisinden yeniden üretildi), bayat ölçüm tabloları.
+Açık kalan tek şey depo görünürlüğü — public'e çevirme kararı verilmedi.
 
 ## Sıradaki
 
