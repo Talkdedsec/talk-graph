@@ -1,29 +1,7 @@
 {
-  "name": "talk-graph",
+  "name": "@talkdedsec/talk-graph",
   "version": "0.7.0",
   "description": "Turns a codebase into a navigable, single-file architecture map. Kod tabanini gezilebilir tek dosyalik mimari haritaya cevirir.",
-  "type": "module",
-  "bin": {
-    "tg": "bin/tg.mjs"
-  },
-  "scripts": {
-    "test": "node --test",
-    "ciz": "node bin/tg.mjs",
-    "draw": "node bin/tg.mjs"
-  },
-  "engines": {
-    "node": ">=20"
-  },
-  "license": "PolyForm-Noncommercial-1.0.0",
-  "files": [
-    "bin",
-    "cekirdek",
-    "kanvas",
-    "README.md",
-    "README.tr.md",
-    "LICENSE",
-    "COMMERCIAL.md"
-  ],
   "keywords": [
     "architecture",
     "dependency-graph",
@@ -43,5 +21,30 @@
   "bugs": {
     "url": "https://github.com/Talkdedsec/talk-graph/issues"
   },
-  "author": "Talkdedsec"
+  "author": "Talkdedsec",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "bin": {
+    "tg": "bin/tg.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "ciz": "node bin/tg.mjs",
+    "draw": "node bin/tg.mjs"
+  },
+  "files": [
+    "bin",
+    "cekirdek",
+    "kanvas",
+    "README.md",
+    "README.tr.md",
+    "LICENSE",
+    "COMMERCIAL.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -10,7 +10,7 @@ girdi deponun kendisi.
 **[Canlı demoyu aç →](https://talkdedsec.github.io/talk-graph/)** — bu deponun kendi haritası.
 
 ```bash
-npx talk-graph ./projem
+npx @talkdedsec/talk-graph ./projem
 ```
 
 Üretilen `cikti/projem.html` tek başına çalışan tek dosyadır — dış bağımlılık yok, CDN yok,
@@ -58,8 +58,8 @@ isimler: `finding.Finding`, `cli.Execute`, `fetch.Client`, `scope.Scope`.
 Node 20 ve üstü. Başka bir şey gerekmez.
 
 ```bash
-npx talk-graph ./projem              # kurulumsuz
-npm install -g talk-graph && tg .    # ya da tg komutunu kur
+npx @talkdedsec/talk-graph ./projem              # kurulumsuz
+npm install -g @talkdedsec/talk-graph && tg .    # ya da tg komutunu kur
 ```
 
 Kaynaktan:
