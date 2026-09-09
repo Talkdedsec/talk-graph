@@ -4,7 +4,7 @@ import { tara } from '../cekirdek/tarama.mjs';
 import { zenginlestir } from '../cekirdek/graf.mjs';
 import { yerlesimKur } from '../cekirdek/yerlesim.mjs';
 import { htmlUret } from '../cekirdek/cizim.mjs';
-import { ornekDepoKur } from './ornek-kur.mjs';
+import { ornekDepoKur } from '../araclar/ornek-depo.mjs';
 
 const kok = ornekDepoKur();
 const graf = zenginlestir(tara(kok));

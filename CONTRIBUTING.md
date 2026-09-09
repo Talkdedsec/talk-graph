@@ -16,7 +16,7 @@
 ### Workflow
 
 ```bash
-node --test "test/*.test.mjs"      # must be green before you push
+node --test      # must be green before you push
 node bin/tg.mjs . --acma           # generate a map of this repo itself
 ```
 
@@ -45,7 +45,7 @@ prefix requirement, one language per message.
 ### Akış
 
 ```bash
-node --test "test/*.test.mjs"      # push öncesi yeşil olmalı
+node --test      # push öncesi yeşil olmalı
 node bin/tg.mjs . --acma           # bu deponun kendi haritasını üret
 ```
 
