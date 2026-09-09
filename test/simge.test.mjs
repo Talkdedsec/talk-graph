@@ -11,10 +11,16 @@ const dosyaGrafi = tara(kok, { simge: true });
 const simgeler = zenginlestir(simgeGrafi(dosyaGrafi, { hepsi: true }));
 const kimlikler = new Set(simgeler.dugumler.map(d => d.kimlik));
 
-test('ice aktarilan adlar kaynak dosyaya baglanir', () => {
+test('ice aktarilan adlar kaynak dosyalara baglanir', () => {
   const dosya = dosyaGrafi.dugumler.find(d => d.kimlik === 'src/siparis/olustur.ts');
-  assert.equal(dosya.ithal.dogrula, 'src/siparis/dogrula.ts');
-  assert.equal(dosya.ithal.kayit, 'src/gunluk.ts');
+  assert.deepEqual(dosya.ithal.dogrula, ['src/siparis/dogrula.ts']);
+  assert.deepEqual(dosya.ithal.kayit, ['src/gunluk.ts']);
+});
+
+test('nitelikli cagri paket simgesine cozulur', () => {
+  const kenar = simgeler.kenarlar.find(k =>
+    k.kaynak === 'arac/olcum.py#olc' && k.hedef === 'arac/yardim.py#topla');
+  assert.ok(kenar, 'python paket ici cagri kenari yok');
 });
 
 test('cagri kenari simgeden simgeye kurulur', () => {

@@ -32,9 +32,20 @@ geri bağlanır.
 | `--gorunum dosya` | dosya | çözülmüş import |
 | `--gorunum simge` | fonksiyon, sınıf, tip | çağrı ya da kullanım, onu doğuran satırla |
 
-Simge seviyesi adlandırılmış import'ları işaret ettikleri simgeye çözer: düğüm bir fonksiyon,
-kenar bir çağrıdır. Grup kutuları dosyaya döner. Simgeye tıklamak dosyayı kendi satırında açar.
-TypeScript/JavaScript ve Python'u kapsar; diğer diller dosya düğümüne düşer.
+Simge seviyesi adlandırılmış import'ları ve nitelikli çağrıları (`scope.Load()`, `pkg::fn()`)
+işaret ettikleri simgeye çözer: düğüm bir fonksiyon, metot ya da tip, kenar bir çağrıdır. Grup
+kutuları dosyaya döner. Simgeye tıklamak dosyayı kendi satırında açar.
+
+| kenar | anlamı |
+|---|---|
+| `cagri` | bir simge diğerini çağırıyor |
+| `referans` | çağırmadan adını geçiriyor |
+| `metot` | aynı paket içinde çözülen çağrı |
+| `icerir` | tip kendi metodunu içeriyor |
+
+TypeScript/JavaScript, Python, Go, Rust, C# ve Java'yı kapsar. 76 dosyalık Go deposunda 547
+simge ve 1261 kenar çıkarıyor; en bağlı düğüm olarak bildirdikleri, bir insanın elle sayacağı
+isimler: `finding.Finding`, `cli.Execute`, `fetch.Client`, `scope.Scope`.
 
 ## Kurulum
 

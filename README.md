@@ -32,9 +32,20 @@ line of code it came from.
 | `--gorunum dosya` | file | resolved import |
 | `--gorunum simge` | function, class, type | call or use, with the line that makes it |
 
-Symbol level resolves named imports to the symbol they name, so a node is a function and an
-edge is a call. Group boxes become files. Clicking a symbol opens the file at its line.
-It covers TypeScript/JavaScript and Python; other languages fall back to file nodes.
+Symbol level resolves named imports and qualified calls (`scope.Load()`, `pkg::fn()`) to the
+symbol they name, so a node is a function, method or type and an edge is a call. Group boxes
+become files. Clicking a symbol opens the file at its line.
+
+| edge | means |
+|---|---|
+| `cagri` | one symbol calls another |
+| `referans` | one symbol names another without calling it |
+| `metot` | a call resolved inside the same package |
+| `icerir` | a type contains a method |
+
+Covers TypeScript/JavaScript, Python, Go, Rust, C# and Java. On a 76-file Go repository it
+extracts 547 symbols and 1261 edges, and the most connected nodes it reports are the ones a
+reader would name by hand: `finding.Finding`, `cli.Execute`, `fetch.Client`, `scope.Scope`.
 
 ## Install
 

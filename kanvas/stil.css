@@ -142,6 +142,9 @@ body.isi-acik .dugum rect.isi { opacity: .5; }
 }
 .kenar.dis-bagimlilik { stroke-dasharray: 4 4; opacity: .55; }
 .kenar.uzun { opacity: .38; }
+.kenar.referans { stroke-dasharray: 2 4; opacity: .45; }
+.kenar.icerir { stroke: var(--vurgu-2); opacity: .5; stroke-dasharray: 6 3; }
+.kenar.metot { opacity: .7; }
 .kenar.dongude { stroke: var(--uyari); }
 .kenar.vurgulu { stroke: var(--vurgu); stroke-width: 2; opacity: 1; }
 .kenar.solgun { opacity: .07; }
