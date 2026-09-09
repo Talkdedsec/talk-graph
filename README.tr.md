@@ -1,6 +1,7 @@
 # talk-graph
 
 [![ci](https://github.com/Talkdedsec/talk-graph/actions/workflows/ci.yml/badge.svg)](https://github.com/Talkdedsec/talk-graph/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/%40talkdedsec%2Ftalk-graph?color=cb3837&label=npm)](https://www.npmjs.com/package/@talkdedsec/talk-graph)
 
 [English](README.md) · **Türkçe**
 
