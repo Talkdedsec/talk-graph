@@ -4,7 +4,7 @@ import { join, relative, dirname, extname, resolve, sep } from 'node:path';
 const ATLANAN_KLASOR = new Set([
   'node_modules', '.git', 'dist', 'build', 'out', 'target', 'bin', 'obj',
   '.next', '.nuxt', '.svelte-kit', '__pycache__', '.venv', 'venv', 'vendor',
-  'coverage', '.turbo', '.cache', 'cikti', 'graphify-out'
+  'coverage', '.turbo', '.cache', 'cikti', 'graph-out'
 ]);
 
 const DILLER = {

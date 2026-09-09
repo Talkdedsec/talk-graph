@@ -4,6 +4,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning: [S
 
 ## [0.7.0] — 2026-09-09
 
+First public release. İlk açık sürüm.
+
 ### Added · Eklenen
 
 - **The whole tool speaks English and Turkish.** Every command has both names (`draw`/`ciz`,
