@@ -2,6 +2,27 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning: [SemVer](https://semver.org/lang/tr/).
 
+## [0.5.0] — 2026-09-09
+
+### Added · Eklenen
+
+- **Group and edge-type filter panel (`g`)** — every group listed with its colour and count,
+  switched off one at a time, with a live counter of what is still on screen.
+  *Grup ve bag turu suzgec paneli; her grup rengi ve sayisiyla, ekranda kalani sayan gostergeyle.*
+- **Colour by group** — each node carries the colour of the group it belongs to, so clusters are
+  visible without reading a single label.
+  *Gruba gore renk; kumeler tek etiket okumadan gorunuyor.*
+- **Detail by zoom** — below 0.5 only the most connected nodes keep their labels and they grow;
+  below 0.24 the map reads as coloured blocks with landmark names.
+  *Yakinliga gore ayrinti; uzaklasinca yalniz isaret taslari etiketini koruyor.*
+- **Edge tooltip** — hovering an edge shows source → target, its relation type and the line.
+  *Kenar ipucu: kaynak, hedef, iliski turu ve satir.*
+- **Shortcut overlay (`?`)** and the new keys `g`, `c`, `1`, `2`, `3`.
+- Fit now accounts for the open panels instead of hiding the map behind them.
+  *Sigdirma acik panelleri hesaba katiyor.*
+
+[0.5.0]: https://github.com/Talkdedsec/talk-graph/releases/tag/v0.5.0
+
 ## [0.4.0] — 2026-09-09
 
 ### Changed · Degisen

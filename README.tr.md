@@ -123,6 +123,17 @@ tg kume ./api                  # kodun gerçekte sahip olduğu modüller, iddia 
 | `döngüler` | dairesel bağımlılıkları izole eder |
 | `değişim` | düğümleri git değişiklik sayısına göre renklendirir |
 | `png` / `svg` | haritayı dışa aktarır |
+| `g` | grup / bağ türü filtre paneli |
+| `1` · `2` · `3` | yakınlaştır · uzaklaştır · sığdır |
+| `c` | dairesel bağımlılıkları izole et |
+| `?` | kısayol listesi |
+| kenarın üstüne gel | kaynak → hedef ve onu doğuran satır |
+
+Her düğüm ait olduğu grubun rengini taşır, soldaki panel o grupları sayılarıyla listeler ve
+tek tek kapatır, araç çubuğundaki sayaç ekranda ne kaldığını söyler. Uzaklaştırdığında yalnız
+işaret taşları etiketini korur.
+
+![Seçili düğüm: çağıranlar ve geçmiş](docs/gorsel/harita-detay.png)
 
 ![Seçili düğüm, açık tema](docs/gorsel/harita-acik.png)
 

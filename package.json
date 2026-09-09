@@ -1,6 +1,6 @@
 {
   "name": "talk-graph",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Turns a codebase into a navigable, single-file architecture map",
   "type": "module",
   "bin": {

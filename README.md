@@ -123,6 +123,17 @@ tg kume ./api               # modules the code actually has, versus the folders 
 | `döngüler` | isolate circular dependencies |
 | `değişim` | colour nodes by git change count |
 | `png` / `svg` | export the map |
+| `g` | group / edge-type filter panel |
+| `1` · `2` · `3` | zoom in · out · fit |
+| `c` | isolate circular dependencies |
+| `?` | shortcut list |
+| hover an edge | source → target and the line that makes it |
+
+Each node is tinted by the group it belongs to, the panel on the left lists those groups with
+their counts and switches them off one by one, and the counter in the toolbar reports what is
+left on screen. Zoom out and only the landmarks keep their labels.
+
+![Selected node with callers and history](docs/gorsel/harita-detay.png)
 
 ![Selected node, light theme](docs/gorsel/harita-acik.png)
 

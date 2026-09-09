@@ -1,7 +1,7 @@
 # talk-graph — durum
 
 Başlangıç: 9 Eylül 2026. Sıfırdan yazıldı, dış bağımlılık yok, kod tamamen bize ait.
-Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.4.0. CI: ubuntu+windows × node 20/22/24, yeşil.
+Depo: `Talkdedsec/talk-graph` (PRIVATE, origin). Sürüm: v0.5.0. CI: ubuntu+windows × node 20/22/24, yeşil.
 Belgeler iki dilli: README.md (EN) + README.tr.md, docs/ARCHITECTURE.md + docs/MIMARI.md.
 
 ## Neden
@@ -46,6 +46,11 @@ düğümleri; ikisi de bizde grup kutusu ve ayrı kapsam olarak duruyor.
 
 Bizim önde olduğumuz yer yerleşim: graphify'ın çıktısı force-directed kıl yumağı, yön okunmuyor.
 Bizimki katmanlı + ortogonal + ölçülmüş kesişme. Kıl yumağıyla yarışılmaz, oraya gidilmez.
+
+Arayüz kıyası (v0.5.0 sonrası): graphify'ın sağ panelinde topluluk onay listesi ve düğüm bilgisi
+vardı, bizde yoktu — alındı ve genişletildi (grup + bağ türü filtresi, canlı sayaç, gruba göre
+renk). Bizde olup onda olmayanlar: tema seti, mini harita, git ısı katmanı, düğüm sürükleme,
+editöre sıçrama, yakınlığa göre ayrıntı, kenar ipucu, kısayol penceresi, PNG/SVG dışa aktarma.
 
 ## Sıradaki
 
