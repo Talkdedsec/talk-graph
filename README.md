@@ -1,5 +1,7 @@
 # talk-graph
 
+[![ci](https://github.com/Talkdedsec/talk-graph/actions/workflows/ci.yml/badge.svg)](https://github.com/Talkdedsec/talk-graph/actions/workflows/ci.yml)
+
 **English** · [Türkçe](README.tr.md)
 
 Turns a codebase into a navigable, single-file architecture map. No hand-written diagram
