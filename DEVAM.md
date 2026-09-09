@@ -61,7 +61,11 @@ Kapatılan: lisans (PolyForm Noncommercial), ekran görüntülerindeki özel dep
 talk-graph'ın kendisinden yeniden üretildi), bayat ölçüm tabloları.
 Kapatılan (2. tur): CLI ve arayüz iki dilli, npm paketi hazır (50.7 KB, 17 dosya),
 Pages demo workflow'u yazıldı, COMMERCIAL.md ve CODE_OF_CONDUCT.md eklendi.
-Açık kalan iki dış adım: depoyu public'e çevirmek ve `npm publish` (npm login kullanıcıda).
+Tamamlandı: depo PUBLIC, Pages demosu canlı (talkdedsec.github.io/talk-graph),
+npm'de `@talkdedsec/talk-graph@0.7.0` yayında, `npx` ile çalıştığı temiz dizinde doğrulandı.
+npm hesabında 2FA passkey ile açıldı (TOTP seçeneği yok, sadece security key/passkey).
+Sonraki sürümler için `.github/workflows/yayin.yml` var: etiket atılınca OIDC ile yayınlar,
+ama önce npm'de paket ayarlarından **trusted publisher** olarak bu depo+workflow tanıtılmalı.
 
 ## Sıradaki
 
