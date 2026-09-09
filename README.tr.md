@@ -164,7 +164,8 @@ Uzun kenarlar sanal düğüm zincirine girmez, eğri olarak çizilir; kesişmeyi
 | depo | dosya | bağ | çizilen | katman | kesişme | süre |
 |---|---|---|---|---|---|---|
 | Go, 76 dosya | 76 | 625 | 37 | 8 | 61 | 42 ms |
-| Next.js, 193 dosya | 193 | 1039 | 10 | 5 | 24 | 392 ms |
+| Go, simge seviyesi | 547 simge | 1261 | 150 | 10 | 6474 | 0.1 s |
+| Next.js, 193 dosya | 193 | 1039 | 9 | 4 | 2 | 0.4 s |
 
 ## Belgeler
 

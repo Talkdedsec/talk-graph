@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning: [SemVer](https://semver.org/lang/tr/).
 
+## [0.5.1] — 2026-09-09
+
+### Fixed · Duzeltilen
+
+- **Bad input failed silently.** A missing path, a directory with no source files and an invalid
+  flag value all produced an empty map and exit code 0. Each now names the problem, lists the
+  valid values or supported extensions, and exits 1.
+  *Hatali girdi sessizce bos harita uretiyordu; artik sorunu adiyla soyleyip 1 ile cikiyor.*
+- The measurement tables in both READMEs were stale after the external-package default changed;
+  refreshed and a symbol-level row added.
+  *Iki README'deki olcum tablosu bayatti, tazelendi.*
+
+[0.5.1]: https://github.com/Talkdedsec/talk-graph/releases/tag/v0.5.1
+
 ## [0.5.0] — 2026-09-09
 
 ### Added · Eklenen
