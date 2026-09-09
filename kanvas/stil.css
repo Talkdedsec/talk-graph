@@ -148,7 +148,8 @@ body.isi-acik .dugum rect.isi { opacity: .5; }
 .kenar.dongude { stroke: var(--uyari); }
 .kenar.vurgulu { stroke: var(--vurgu); stroke-width: 2; opacity: 1; }
 .kenar.solgun { opacity: .07; }
-.kenar-ok { fill: var(--cizgi-guclu); }
+.kenar-ok { fill: var(--cizgi-guclu); opacity: .85; }
+.kenar-ok.dongude { fill: var(--uyari); }
 .kenar-ok.vurgulu { fill: var(--vurgu); }
 
 .akis {
