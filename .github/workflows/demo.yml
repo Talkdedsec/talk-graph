@@ -50,4 +50,4 @@ jobs:
       url: ${{ steps.dagit.outputs.page_url }}
     steps:
       - id: dagit
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
