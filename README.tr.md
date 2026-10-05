@@ -21,7 +21,7 @@ Komutlar ve bayraklar **Türkçe ve İngilizce** çalışır: `tg ciz` ile `tg d
 `--gorunum simge` ile `--view symbol` aynı bayrak. Çıktı diline sistem yerelin karar verir,
 `--dil` ile değiştirilir.
 
-![Bağımlılık haritası, koyu tema](docs/gorsel/harita-koyu.png)
+![Bağımlılık haritası, koyu tema](docs/images/map-dark.png)
 
 ## Neden
 
@@ -29,7 +29,7 @@ Diyagram araçları diyagramı sana yazdırır. Bu onu okur. Her düğüm gerçe
 her kenar gerçek bir dosyaya çözülmüş gerçek bir import, ve her düğüm geldiği kod satırına
 geri bağlanır.
 
-![Simge görünümü: fonksiyonlar ve aralarındaki çağrılar](docs/gorsel/harita-simge.png)
+![Simge görünümü: fonksiyonlar ve aralarındaki çağrılar](docs/images/map-symbols.png)
 
 ## Üç seviye
 
@@ -125,7 +125,7 @@ tg kume ./api                  # kodun gerçekte sahip olduğu modüller, iddia 
 | `--hepsi` | simge görünümünde bağsız simgeleri de çiz |
 | `--derinlik <n>` | grup yolu derinliği (varsayılan 2) |
 | `--gruplama klasor\|topluluk` | klasöre göre grupla, ya da kodun gerçekten bağladığına göre |
-| `--tema <ad>` | açılış teması, bkz. [Temalar](docs/TEMALAR.md) |
+| `--tema <ad>` | açılış teması, bkz. [Temalar](docs/THEMES.md) |
 | `--odak <yol parçası>` | yalnız o düğümün komşuluğunu çiz |
 | `--cevre <n>` | odak yarıçapı (varsayılan 1) |
 | `--enfazla <n>` | çizilecek en fazla düğüm (varsayılan 120) |
@@ -162,9 +162,9 @@ Her düğüm ait olduğu grubun rengini taşır, soldaki panel o grupları sayı
 tek tek kapatır, araç çubuğundaki sayaç ekranda ne kaldığını söyler. Uzaklaştırdığında yalnız
 işaret taşları etiketini korur.
 
-![Seçili düğüm: çağıranlar ve geçmiş](docs/gorsel/harita-detay.png)
+![Seçili düğüm: çağıranlar ve geçmiş](docs/images/map-detail.png)
 
-![Seçili düğüm, açık tema](docs/gorsel/harita-acik.png)
+![Seçili düğüm, açık tema](docs/images/map-light.png)
 
 ## Diller
 
@@ -198,8 +198,8 @@ Uzun kenarlar sanal düğüm zincirine girmez, eğri olarak çizilir; kesişmeyi
 
 ## Belgeler
 
-- [Mimari](docs/MIMARI.md) — hattın nasıl kurulduğu
-- [Temalar](docs/TEMALAR.md) — on bir gömülü tema ve yenisini eklemek
+- [Mimari](docs/ARCHITECTURE.tr.md) — hattın nasıl kurulduğu
+- [Temalar](docs/THEMES.md) — on bir gömülü tema ve yenisini eklemek
 - [Değişim defteri](CHANGELOG.md)
 - [Katkı](CONTRIBUTING.md)
 - [Güvenlik](SECURITY.md)

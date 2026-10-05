@@ -20,7 +20,7 @@ no CDN, no build step. Share it as-is.
 Commands and flags work in **English and Turkish**: `tg draw` and `tg ciz` are the same command,
 `--view symbol` and `--gorunum simge` the same flag. Output follows your locale, or `--lang`.
 
-![Dependency map, dark theme](docs/gorsel/harita-koyu.png)
+![Dependency map, dark theme](docs/images/map-dark.png)
 
 ## Why
 
@@ -28,7 +28,7 @@ Diagram tools ask you to write the diagram. This one reads it. Every node is a r
 package, every edge a real import resolved to a real target, and every node links back to the
 line of code it came from.
 
-![Symbol view: functions and the calls between them](docs/gorsel/harita-simge.png)
+![Symbol view: functions and the calls between them](docs/images/map-symbols.png)
 
 ## Three levels
 
@@ -124,7 +124,7 @@ tg kume ./api               # modules the code actually has, versus the folders 
 | `--hepsi` | in symbol view, draw unconnected symbols too |
 | `--derinlik <n>` | grouping path depth (default 2) |
 | `--gruplama klasor\|topluluk` | group by folder, or by what the code actually connects |
-| `--tema <ad>` | starting theme, see [Themes](docs/TEMALAR.md) |
+| `--tema <ad>` | starting theme, see [Themes](docs/THEMES.md) |
 | `--odak <path fragment>` | draw only that node's neighbourhood |
 | `--cevre <n>` | focus radius (default 1) |
 | `--enfazla <n>` | max nodes drawn (default 120) |
@@ -161,9 +161,9 @@ Each node is tinted by the group it belongs to, the panel on the left lists thos
 their counts and switches them off one by one, and the counter in the toolbar reports what is
 left on screen. Zoom out and only the landmarks keep their labels.
 
-![Selected node with callers and history](docs/gorsel/harita-detay.png)
+![Selected node with callers and history](docs/images/map-detail.png)
 
-![Selected node, light theme](docs/gorsel/harita-acik.png)
+![Selected node, light theme](docs/images/map-light.png)
 
 ## Languages
 
@@ -198,7 +198,7 @@ crossings low: on a 76-file Go repository the package map lands at 61 crossings 
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) — how the pipeline is put together
-- [Themes](docs/TEMALAR.md) — the eleven built-in themes and how to add one
+- [Themes](docs/THEMES.md) — the eleven built-in themes and how to add one
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)
