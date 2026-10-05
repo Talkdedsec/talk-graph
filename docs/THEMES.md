@@ -21,12 +21,12 @@ node bin/tg.mjs ./projem --tema murekkep
 
 ## Adding one · Yeni tema eklemek
 
-**EN** — A theme is one CSS block of tokens. Add it to `kanvas/stil.css` next to the others, add a
-row to `TEMALAR` in `kanvas/motor.js`, and add a swatch rule (`.ornek[data-o="ad"]`). Nothing else
+**EN** — A theme is one CSS block of tokens. Add it to `viewer/viewer.css` next to the others, add a
+row to `TEMALAR` in `viewer/viewer.js`, and add a swatch rule (`.ornek[data-o="ad"]`). Nothing else
 reads theme names, and every colour in the map already resolves through these tokens.
 
-**TR** — Tema, tek bir CSS token bloğudur. `kanvas/stil.css` içine diğerlerinin yanına ekle,
-`kanvas/motor.js` içindeki `TEMALAR` listesine bir satır ve bir örnek kuralı
+**TR** — Tema, tek bir CSS token bloğudur. `viewer/viewer.css` içine diğerlerinin yanına ekle,
+`viewer/viewer.js` içindeki `TEMALAR` listesine bir satır ve bir örnek kuralı
 (`.ornek[data-o="ad"]`) ekle. Tema adını başka hiçbir yer okumaz; haritadaki her renk zaten bu
 token'lardan geçer.
 

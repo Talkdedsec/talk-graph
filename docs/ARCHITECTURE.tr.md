@@ -31,7 +31,7 @@ karşılaştırılabilir. Dış paketler `dis:<ad>` önekini alır.
 `x, y, genislik, yukseklik, katman`; kenarlar artı `noktalar` ve SVG `yol`; grup kutuları,
 tuval dikdörtgeni ve kesişme sayısı.
 
-## 1. Tarama — `cekirdek/tarama.mjs`
+## 1. Tarama — `lib/scan.mjs`
 
 İki geçiş. Birincisi ağacı gezer (derleme ve vendor klasörlerini atlar), her dosyayı bir kez
 okur ve dile göre çalışan çıkarıcıyı koşturur; çıkarıcı import metinlerini satır numarasıyla
@@ -52,7 +52,7 @@ dizinler kurulur: klasör dizini, C# namespace dizini ve `go.mod`'dan modül yol
 Çözülemeyen ve göreli olmayan her şey dış paket düğümü olur; hiçbir bağımlılık sessizce
 düşmez. Aynı çiftteki tekrarlı kenarlar `agirlik` taşıyan tek kenara iner.
 
-## 2. Model — `cekirdek/graf.mjs`
+## 2. Model — `lib/graph.mjs`
 
 Komşuluk, fan-in/out ve **yinelemeli** Tarjan ile döngü tespiti (özyinelemeli biçim gerçek
 depolarda yığını taşırıyor). Döngü hem düğüme hem kenara işaretlenir; `döngüler` düğmesinin
@@ -63,13 +63,13 @@ Görünümleri üç şekillendirici besler: `grupla` düğümleri seçilen derin
 düğümleri tutar. `fark` iki taramayı karşılaştırır: eklenen, silinen, boyu değişen düğümler ve
 eklenen/silinen kenarlar.
 
-## 3. Geçmiş — `cekirdek/gecmis.mjs`
+## 3. Geçmiş — `lib/history.mjs`
 
 Tek bir `git log --numstat --since=<n>.days` çağrısı; yol başına değişiklik sayısı, değişen
 satır, son dokunma ve ayrı yazar sayısına ayrıştırılır. Yeniden adlandırma (`a => b`) yeni yola
 katlanır. Hedef git deposu değilse aşama atlanır ve harita onsuz üretilir.
 
-## 4. Yerleşim — `cekirdek/yerlesim.mjs`
+## 4. Yerleşim — `lib/layout.mjs`
 
 Katmanlı (Sugiyama tarzı) hat:
 
@@ -91,9 +91,9 @@ Katmanlı (Sugiyama tarzı) hat:
 7. **Grup kutusu** — bir klasör, sınırlayıcı dikdörtgeni içinde yabancı düğüm yoksa kutu alır;
    böylece dağınık klasörler yanıltıcı çerçeve üretmez.
 
-## 5. Çizim — `cekirdek/cizim.mjs` + `kanvas/`
+## 5. Çizim — `lib/render.mjs` + `viewer/`
 
-`cizim`, `kanvas/stil.css` ve `kanvas/motor.js` dosyalarını tek bir HTML belgesine gömer ve
+`cizim`, `viewer/viewer.css` ve `viewer/viewer.js` dosyalarını tek bir HTML belgesine gömer ve
 yerleşimi JSON olarak yerleştirir. `<`, U+2028 ve U+2029 kaçırılır; hiçbir yol ya da simge adı
 veri bloğundan çıkamaz. Sonuç ağdan hiçbir şey yüklemez — CI işi çıktıda `<script src=` ve
 `<link href=` arayarak bunu doğrular.
@@ -104,7 +104,7 @@ simge araması, detay paneli, mini harita, ısı katmanı, tema, konum dışa ak
 dışa aktarma ondadır. Dışa aktarmada SVG klonlanır, çözülmüş tema değişkenleri `:root` bloğu ve
 bir zemin dikdörtgeni olarak enjekte edilir, sonra seri hale getirilir.
 
-## 6. Çözümleme — `cekirdek/analiz.mjs`
+## 6. Çözümleme — `lib/analysis.mjs`
 
 Arama, tam kimliği dosya adının, onu gövdenin, onu da yol parçasının önüne koyar ve test
 dosyalarını cezalandırır; böylece `finding`, `finding_test.go` yerine `finding.go`'ya düşer.
@@ -125,12 +125,12 @@ bağımlı olunan dosyaları ve yalnızları raporlar.
 topluluk, dizin ağacının itiraf etmediği bir modüldür. `--gruplama topluluk` klasör yerine bu
 toplulukları çizer.
 
-## 7. Dışa aktarma — `cekirdek/disaaktar.mjs`
+## 7. Dışa aktarma — `lib/export.mjs`
 
 DOT, GraphML, CSV, Mermaid ve ham JSON; her biri kendi biçimine göre kaçırılmış. `--gorunum grup`
 dosya grafı yerine toplanmış paket grafını dışa aktarır.
 
-## 8. Simge seviyesi — `cekirdek/simge.mjs`
+## 8. Simge seviyesi — `lib/symbols.mjs`
 
 `--gorunum simge` istendiğinde tarama dosya başına iki şey daha tutar: her import'un bağladığı
 adlar (`import { a, b as c }` → `a`, `c`) ve her tanımlayıcı geçişi — satırıyla ve ardından `(`
@@ -155,7 +155,7 @@ sütunla ekrana sığan bir harita arasındadır.
 
 ## Test
 
-`araclar/ornek-depo.mjs` geçici dizine küçük bir örnek depo yazar — bir döngü, ortak bir yardımcı,
+`tools/sample-repo.mjs` geçici dizine küçük bir örnek depo yazar — bir döngü, ortak bir yardımcı,
 çözülemeyen bir import, bir Python paketi ve bir test dosyası. Testler çözümlemeyi, graf
 ölçümlerini, yerleşim değişmezlerini (katman içinde çakışma yok, her düğüm tuvalin içinde, her
 kenarın geçerli yolu var) ve üretilen HTML'in gerçekten kendine yettiğini doğrular.

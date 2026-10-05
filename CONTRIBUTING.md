@@ -20,7 +20,7 @@ node --test      # must be green before you push
 node bin/tg.mjs . --acma           # generate a map of this repo itself
 ```
 
-Every change to `cekirdek/` needs a test. Layout changes must not regress the crossing count on
+Every change to `lib/` needs a test. Layout changes must not regress the crossing count on
 the two repositories listed in the README measurement table — state the before/after numbers in
 the pull request.
 
@@ -49,7 +49,7 @@ node --test      # push öncesi yeşil olmalı
 node bin/tg.mjs . --acma           # bu deponun kendi haritasını üret
 ```
 
-`cekirdek/` altındaki her değişiklik test ister. Yerleşim değişiklikleri README ölçüm
+`lib/` altındaki her değişiklik test ister. Yerleşim değişiklikleri README ölçüm
 tablosundaki iki depoda kesişme sayısını kötüleştirmemeli — PR'da önce/sonra sayısını yaz.
 
 ### Commit mesajı
