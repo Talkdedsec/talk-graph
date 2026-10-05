@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { tara } from '../cekirdek/tarama.mjs';
-import { zenginlestir, grupla, komsuluk, budale, fark } from '../cekirdek/graf.mjs';
-import { ornekDepoKur } from '../araclar/ornek-depo.mjs';
+import { tara } from '../lib/scan.mjs';
+import { zenginlestir, grupla, komsuluk, budale, fark } from '../lib/graph.mjs';
+import { ornekDepoKur } from '../tools/sample-repo.mjs';
 
 const kok = ornekDepoKur();
 const graf = zenginlestir(tara(kok));
