@@ -32,7 +32,7 @@ between two scans. External packages use the `dis:<name>` prefix.
 `x, y, genislik, yukseklik, katman`, edges plus `noktalar` and an SVG path `yol`, group boxes,
 a canvas rect and the crossing count.
 
-## 1. Scan — `cekirdek/tarama.mjs`
+## 1. Scan — `lib/scan.mjs`
 
 Two passes. The first walks the tree (skipping build and vendor directories), reads each file
 once, and runs a per-language extractor that returns import specifiers with their line numbers
@@ -53,7 +53,7 @@ The second pass resolves each specifier against those indexes:
 Anything that stays unresolved and is not relative becomes an external package node, so a
 dependency is never silently dropped. Parallel edges collapse into one carrying `agirlik`.
 
-## 2. Model — `cekirdek/graf.mjs`
+## 2. Model — `lib/graph.mjs`
 
 Adjacency, fan-in/out, and circular dependency detection with an **iterative** Tarjan (the
 recursive form blows the stack on real repositories). Cycles are recorded on both nodes and
@@ -64,13 +64,13 @@ depth, `komsuluk` extracts a neighbourhood of a given radius, `budale` keeps the
 highest-degree nodes when a graph exceeds the draw budget. `fark` compares two scans and
 reports added, removed and resized nodes plus added and removed edges.
 
-## 3. History — `cekirdek/gecmis.mjs`
+## 3. History — `lib/history.mjs`
 
 One `git log --numstat --since=<n>.days` call, parsed into change count, changed lines, last
 touch and distinct author count per path. Renames (`a => b`) are folded onto the new path.
 If the target is not a git repository the stage is skipped and the map is built without it.
 
-## 4. Layout — `cekirdek/yerlesim.mjs`
+## 4. Layout — `lib/layout.mjs`
 
 A layered (Sugiyama-style) pipeline:
 
@@ -93,9 +93,9 @@ A layered (Sugiyama-style) pipeline:
 7. **Group boxes** — a folder gets a box only if its bounding rectangle contains no foreign
    node, so scattered folders produce no misleading frame.
 
-## 5. Render — `cekirdek/cizim.mjs` + `kanvas/`
+## 5. Render — `lib/render.mjs` + `viewer/`
 
-`cizim` inlines `kanvas/stil.css` and `kanvas/motor.js` into one HTML document and embeds the
+`cizim` inlines `viewer/viewer.css` and `viewer/viewer.js` into one HTML document and embeds the
 layout as JSON. `<`, U+2028 and U+2029 are escaped so no path or symbol name can escape the
 data block. The result loads nothing from the network — the CI job asserts this by grepping the
 output for `<script src=` and `<link href=`.
@@ -106,7 +106,7 @@ highlighting, search over paths and symbols, the detail panel, the minimap, the 
 theme switching, position export and PNG/SVG export. For export it clones the SVG, injects the
 resolved theme variables as a `:root` block and a background rect, then serialises.
 
-## 6. Analysis — `cekirdek/analiz.mjs`
+## 6. Analysis — `lib/analysis.mjs`
 
 Search scores an exact identifier above a filename above a stem above a path fragment, with a
 penalty for test files, so `finding` resolves to `finding.go` rather than `finding_test.go`.
@@ -127,12 +127,12 @@ multiplicity) and reports each community with the folders it spans — a communi
 folders is a module the directory tree does not admit to. `--gruplama topluluk` draws those
 communities instead of folders.
 
-## 7. Export — `cekirdek/disaaktar.mjs`
+## 7. Export — `lib/export.mjs`
 
 DOT, GraphML, CSV, Mermaid and raw JSON, all escaped for their format. `--gorunum grup` exports
 the collapsed package graph instead of the file graph.
 
-## 8. Symbol level — `cekirdek/simge.mjs`
+## 8. Symbol level — `lib/symbols.mjs`
 
 When `--gorunum simge` is asked for, the scan keeps two extra things per file: the names each
 import binds (`import { a, b as c }` → `a`, `c`) and every identifier occurrence with its line
@@ -158,7 +158,7 @@ a 6500-pixel column and a map that fits the screen.
 
 ## Testing
 
-`araclar/ornek-depo.mjs` writes a small fixture repository into a temp directory — a cycle, a
+`tools/sample-repo.mjs` writes a small fixture repository into a temp directory — a cycle, a
 shared utility, an unresolvable import, a Python package and a test file — and the suites assert
 resolution, graph metrics, layout invariants (no overlap within a layer, every node inside the
 canvas, every edge with a valid path) and that the produced HTML is genuinely self-contained.

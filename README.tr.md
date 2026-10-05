@@ -177,13 +177,13 @@ Rust (`crate::` ve `mod`), C# (namespace dizini), Lua, Ruby, PHP, Java.
 
 | aşama | dosya | işi |
 |---|---|---|
-| tarama | `cekirdek/tarama.mjs` | dosyaları gezer, dile göre import ve simge çıkarır, hedefi gerçek dosyaya çözer |
-| model | `cekirdek/graf.mjs` | fan-in/out, döngü (Tarjan), klasör gruplama, budama, tarama farkı |
-| geçmiş | `cekirdek/gecmis.mjs` | `git log`'dan dosya başına değişiklik sayısı, son dokunma, yazar sayısı |
-| yerleşim | `cekirdek/yerlesim.mjs` | katmanlı yerleşim: döngü kırma, katman atama, medyan sıralama, koordinat ataması, ortogonal yönlendirme |
-| çözümleme | `cekirdek/analiz.mjs` | düğüm arama, açıklama, en kısa yol, sağlık raporu, modülerlik kümeleme |
-| dışa aktarma | `cekirdek/disaaktar.mjs` | dot, graphml, csv, mermaid, json |
-| çizim | `cekirdek/cizim.mjs` + `kanvas/` | gömülü SVG sahnesi ve gezgini olan tek dosyalık HTML |
+| tarama | `lib/scan.mjs` | dosyaları gezer, dile göre import ve simge çıkarır, hedefi gerçek dosyaya çözer |
+| model | `lib/graph.mjs` | fan-in/out, döngü (Tarjan), klasör gruplama, budama, tarama farkı |
+| geçmiş | `lib/history.mjs` | `git log`'dan dosya başına değişiklik sayısı, son dokunma, yazar sayısı |
+| yerleşim | `lib/layout.mjs` | katmanlı yerleşim: döngü kırma, katman atama, medyan sıralama, koordinat ataması, ortogonal yönlendirme |
+| çözümleme | `lib/analysis.mjs` | düğüm arama, açıklama, en kısa yol, sağlık raporu, modülerlik kümeleme |
+| dışa aktarma | `lib/export.mjs` | dot, graphml, csv, mermaid, json |
+| çizim | `lib/render.mjs` + `viewer/` | gömülü SVG sahnesi ve gezgini olan tek dosyalık HTML |
 
 Uzun kenarlar sanal düğüm zincirine girmez, eğri olarak çizilir; kesişmeyi düşük tutan şey bu:
 76 dosyalık Go deposunda paket haritası 42 ms'de 61 kesişmeye iniyor.
