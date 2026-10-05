@@ -176,13 +176,13 @@ Unresolved imports become external package nodes instead of being dropped.
 
 | stage | file | job |
 |---|---|---|
-| scan | `cekirdek/tarama.mjs` | walk files, extract imports and symbols per language, resolve targets to real files |
-| model | `cekirdek/graf.mjs` | fan-in/out, cycles (Tarjan), folder grouping, pruning, scan diff |
-| history | `cekirdek/gecmis.mjs` | change count, last touch and author count per file from `git log` |
-| layout | `cekirdek/yerlesim.mjs` | layered layout: cycle breaking, layer assignment, median ordering, coordinate assignment, orthogonal routing |
-| analysis | `cekirdek/analiz.mjs` | node search, explanation, shortest path, health report, modularity clustering |
-| export | `cekirdek/disaaktar.mjs` | dot, graphml, csv, mermaid, json |
-| render | `cekirdek/cizim.mjs` + `kanvas/` | single-file HTML with an inline SVG scene and its viewer |
+| scan | `lib/scan.mjs` | walk files, extract imports and symbols per language, resolve targets to real files |
+| model | `lib/graph.mjs` | fan-in/out, cycles (Tarjan), folder grouping, pruning, scan diff |
+| history | `lib/history.mjs` | change count, last touch and author count per file from `git log` |
+| layout | `lib/layout.mjs` | layered layout: cycle breaking, layer assignment, median ordering, coordinate assignment, orthogonal routing |
+| analysis | `lib/analysis.mjs` | node search, explanation, shortest path, health report, modularity clustering |
+| export | `lib/export.mjs` | dot, graphml, csv, mermaid, json |
+| render | `lib/render.mjs` + `viewer/` | single-file HTML with an inline SVG scene and its viewer |
 
 Long edges skip the virtual-node chain and are drawn as curves instead, which is what keeps
 crossings low: on a 76-file Go repository the package map lands at 61 crossings in 42 ms.
