@@ -14,10 +14,10 @@ node bin/tg.mjs ./projem --tema murekkep
 
 | | | |
 |---|---|---|
-| **gece** — default, neutral dark<br>varsayılan, nötr koyu<br>![gece](gorsel/tema-gece.png) | **gunduz** — neutral light<br>nötr açık<br>![gunduz](gorsel/tema-gunduz.png) | **kagit** — warm paper<br>sıcak kâğıt<br>![kagit](gorsel/tema-kagit.png) |
-| **murekkep** — blueprint blue<br>mavi teknik çizim<br>![murekkep](gorsel/tema-murekkep.png) | **terminal** — green phosphor<br>yeşil fosfor<br>![terminal](gorsel/tema-terminal.png) | **bakir** — copper on charcoal<br>kömür üstü bakır<br>![bakir](gorsel/tema-bakir.png) |
-| **buz** — cool light<br>serin açık<br>![buz](gorsel/tema-buz.png) | **mor** — violet dark<br>mor koyu<br>![mor](gorsel/tema-mor.png) | **orman** — forest dark<br>orman koyu<br>![orman](gorsel/tema-orman.png) |
-| **kontrast** — maximum contrast<br>en yüksek kontrast<br>![kontrast](gorsel/tema-kontrast.png) | **gazete** — print, black on white<br>baskı, beyaz üstü siyah<br>![gazete](gorsel/tema-gazete.png) | |
+| **gece** — default, neutral dark<br>varsayılan, nötr koyu<br>![gece](images/theme-night.png) | **gunduz** — neutral light<br>nötr açık<br>![gunduz](images/theme-day.png) | **kagit** — warm paper<br>sıcak kâğıt<br>![kagit](images/theme-paper.png) |
+| **murekkep** — blueprint blue<br>mavi teknik çizim<br>![murekkep](images/theme-ink.png) | **terminal** — green phosphor<br>yeşil fosfor<br>![terminal](images/theme-terminal.png) | **bakir** — copper on charcoal<br>kömür üstü bakır<br>![bakir](images/theme-copper.png) |
+| **buz** — cool light<br>serin açık<br>![buz](images/theme-ice.png) | **mor** — violet dark<br>mor koyu<br>![mor](images/theme-violet.png) | **orman** — forest dark<br>orman koyu<br>![orman](images/theme-forest.png) |
+| **kontrast** — maximum contrast<br>en yüksek kontrast<br>![kontrast](images/theme-contrast.png) | **gazete** — print, black on white<br>baskı, beyaz üstü siyah<br>![gazete](images/theme-newspaper.png) | |
 
 ## Adding one · Yeni tema eklemek
 

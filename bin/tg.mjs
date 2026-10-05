@@ -2,15 +2,15 @@
 import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync, watch } from 'node:fs';
 import { resolve, dirname, join, basename } from 'node:path';
 import { spawn } from 'node:child_process';
-import { tara } from '../cekirdek/tarama.mjs';
-import { zenginlestir, grupla, komsuluk, budale, fark } from '../cekirdek/graf.mjs';
-import { yerlesimKur } from '../cekirdek/yerlesim.mjs';
-import { htmlUret } from '../cekirdek/cizim.mjs';
-import { gecmisiIsle } from '../cekirdek/gecmis.mjs';
-import { simgeGrafi } from '../cekirdek/simge.mjs';
-import { dugumBul, anlat, enKisaYol, denetle, topluluklar } from '../cekirdek/analiz.mjs';
-import { bicimler, uzantilar } from '../cekirdek/disaaktar.mjs';
-import { dilSec, metinler } from '../cekirdek/dil.mjs';
+import { tara } from '../lib/scan.mjs';
+import { zenginlestir, grupla, komsuluk, budale, fark } from '../lib/graph.mjs';
+import { yerlesimKur } from '../lib/layout.mjs';
+import { htmlUret } from '../lib/render.mjs';
+import { gecmisiIsle } from '../lib/history.mjs';
+import { simgeGrafi } from '../lib/symbols.mjs';
+import { dugumBul, anlat, enKisaYol, denetle, topluluklar } from '../lib/analysis.mjs';
+import { bicimler, uzantilar } from '../lib/export.mjs';
+import { dilSec, metinler } from '../lib/i18n.mjs';
 
 const UZANTILAR = '.ts .tsx .js .jsx .mjs .cjs .py .go .rs .cs .lua .rb .php .java .vue .svelte';
 

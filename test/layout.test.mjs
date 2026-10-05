@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { tara } from '../cekirdek/tarama.mjs';
-import { zenginlestir } from '../cekirdek/graf.mjs';
-import { yerlesimKur } from '../cekirdek/yerlesim.mjs';
-import { htmlUret } from '../cekirdek/cizim.mjs';
-import { ornekDepoKur } from '../araclar/ornek-depo.mjs';
+import { tara } from '../lib/scan.mjs';
+import { zenginlestir } from '../lib/graph.mjs';
+import { yerlesimKur } from '../lib/layout.mjs';
+import { htmlUret } from '../lib/render.mjs';
+import { ornekDepoKur } from '../tools/sample-repo.mjs';
 
 const kok = ornekDepoKur();
 const graf = zenginlestir(tara(kok));

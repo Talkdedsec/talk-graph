@@ -34,8 +34,8 @@
   },
   "files": [
     "bin",
-    "cekirdek",
-    "kanvas",
+    "lib",
+    "viewer",
     "README.md",
     "README.tr.md",
     "LICENSE",

@@ -1,6 +1,6 @@
 # Architecture
 
-[Türkçe](MIMARI.md)
+[Türkçe](ARCHITECTURE.tr.md)
 
 Nine stages, each a plain ES module with no dependencies, connected by two data shapes.
 

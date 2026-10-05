@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { tara, testDosyasiMi } from '../cekirdek/tarama.mjs';
-import { ornekDepoKur } from '../araclar/ornek-depo.mjs';
+import { tara, testDosyasiMi } from '../lib/scan.mjs';
+import { ornekDepoKur } from '../tools/sample-repo.mjs';
 
 const kok = ornekDepoKur();
 
