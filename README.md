@@ -209,3 +209,7 @@ crossings low: on a 76-file Go repository the package map lands at 61 crossings 
 [PolyForm Noncommercial 1.0.0](LICENSE) — free for any noncommercial use: personal work,
 research, teaching, charities, government. Selling it or running it inside a commercial
 service needs a separate licence: talkdedsec@proton.me.
+
+<p align="center">
+  <sub>Built by <a href="https://talkdedsec.com">Talkdedsec</a></sub>
+</p>

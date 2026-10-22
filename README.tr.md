@@ -210,3 +210,7 @@ Uzun kenarlar sanal düğüm zincirine girmez, eğri olarak çizilir; kesişmeyi
 [PolyForm Noncommercial 1.0.0](LICENSE) — ticari olmayan her kullanım serbest: kişisel iş,
 araştırma, eğitim, hayır kurumu, kamu. Satmak ya da ticari bir hizmetin içinde çalıştırmak
 ayrı lisans ister: talkdedsec@proton.me.
+
+<p align="center">
+  <sub><a href="https://talkdedsec.com">Talkdedsec</a> tarafından yapıldı</sub>
+</p>
