@@ -29,6 +29,18 @@ jobs:
           node bin/tg.mjs draw . --view symbol --max 200 --no-open --out site/index.html --lang en
           node bin/tg.mjs draw . --view file --no-open --out site/dosya.html --lang en
           node bin/tg.mjs ciz . --gorunum simge --enfazla 200 --acma --cikti site/tr.html --dil tr
+      - name: paylasim etiketleri
+        run: |
+          node -e '
+          const fs = require("fs"), f = "site/index.html";
+          const m = [
+            "<meta name=\"description\" content=\"talk-graph run on its own source: a navigable architecture map generated from a codebase, in one HTML file.\">",
+            "<meta property=\"og:title\" content=\"talk-graph — a map of a codebase in one HTML file\">",
+            "<meta property=\"og:image\" content=\"https://repository-images.githubusercontent.com/1362915896/71008330-9d44-44f7-8c18-cd5930727029\">",
+            "<meta name=\"twitter:card\" content=\"summary_large_image\">"
+          ].join("");
+          fs.writeFileSync(f, fs.readFileSync(f, "utf8").replace(/<title>[^<]*<.title>/,"<title>talk-graph — a map of a codebase in one HTML file</title>" + m));
+          '
       - name: tek dosya mi
         run: |
           for f in site/index.html site/dosya.html site/tr.html; do
